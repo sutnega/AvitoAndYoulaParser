@@ -1,3 +1,4 @@
+import json
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import time
@@ -81,6 +82,16 @@ class YoulaParser:
                     'discount': discount,
                     'link': link
                 })
+                data = {
+                    'name': name,
+                    'city': city,
+                    'price': price,
+                    'discount': discount,
+                    'url': link
+
+                }
+                self.data.append(data)
+        self.__save_data()
         return data_list
 
     def __parser(self, url, data_list_count):
@@ -135,6 +146,9 @@ class YoulaParser:
         writer._save()
         print(f'Сбор данных завершен. Данные сохранены в файл "data_yula.xlsx"')
 
+    def __save_data(self):
+        with open("Youla.json", "w", encoding='utf-8') as f:
+            json.dump(self.data, f, ensure_ascii=False, indent=4)
     def parse(self):
         self.__set_up()
         self.__get_url()

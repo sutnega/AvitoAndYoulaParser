@@ -48,9 +48,9 @@ class AvitoParser:
             price = title.find_element(By.CSS_SELECTOR, "[itemprop='price']").get_attribute("content")
             data = {
                 'name': name,
+                'price': price,
                 'description': description,
                 'url': url,
-                'price': price
 
             }
             if price == 'Бесплатно':
@@ -68,7 +68,7 @@ class AvitoParser:
         print('страница' + str(self.count))
 
     def __save_data(self):
-        with open("items.json", "w", encoding='utf-8') as f:
+        with open("Avito.json", "w", encoding='utf-8') as f:
             json.dump(self.data, f, ensure_ascii=False, indent=4)
 
     def parse(self):
