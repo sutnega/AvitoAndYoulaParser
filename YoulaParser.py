@@ -3,6 +3,8 @@ from selenium import webdriver
 import time
 import pandas
 import undetected_chromedriver as uc
+import chromedriver_autoinstaller as chromedriver
+#pip install chromedriver-autoinstaller
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options  # для спрятанного хрома
@@ -12,16 +14,18 @@ from selenium.webdriver.chrome.options import Options  # для спрятанн
 
 
 class YoulaParser:
-    def __init__(self, url: str, version_main=None):  # items: list, count: int = 10, price: int = 0
+    def __init__(self, url: str, data_list_count:int, version_main=None):  # items: list, count: int = 10, price: int = 0
         self.url = url
         # self.items = items
         # self.count = count
         # self.price = price
         self.version_main = version_main
         self.data = []
+        self.data_list_count=data_list_count
     def __get_url(self):
         self.driver.get(self.url)
     def __set_up(self):
+        chromedriver.install()
         options = Options()
         options.add_argument('--headless')
         options.add_argument("--disable-blink-features=AutomationControlled")
@@ -134,14 +138,13 @@ class YoulaParser:
     def parse(self):
         self.__set_up()
         self.__get_url()
-        data = self.__parser(url, data_list_count)
+        data = self.__parser(self.url, self.data_list_count)
         self.__save_exel(data)
 
 
 if __name__ == "__main__":
     url = input(
         'Введите ссылку на раздел, с заранее выбранными характеристиками (ценовой диапазон, сроки размещения и тд):\n')
-    data_list_count = input('Примерное количество записей выдачи (или Enter, органичение по умолчанию 1000):\n')
     print('Запуск парсера...')
-    YoulaParser(url=url, version_main=110,  # 124 or 110
+    YoulaParser(url=url, version_main=110,data_list_count=data_list_count  # 124 or 110
                 ).parse()

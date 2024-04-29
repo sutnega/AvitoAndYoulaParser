@@ -7,6 +7,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options  # для спрятанного хрома
 from AvitoParser import AvitoParser
 from YoulaParser import YoulaParser
+#pip install chromedriver-autoinstaller
+import chromedriver_autoinstaller as chromedriver
+
 
 GLOBAL_PRICE = 0
 
@@ -43,15 +46,16 @@ def input_items():
 
 
 if __name__ == "__main__":
+    chromedriver.install()
     url =input_url()
     urlAvito = url[0]
     urlYoula = url[1]
-    print("Ограничение по страницам")
-    count = int(input())
+    count = int(input(('Ограничение по страницам:\n')))
+    data_list_count = input('Примерное количество записей выдачи (или Enter, органичение по умолчанию 1000):\n')
     print("макс ограничение по цене")
     price = int(input())
     items = input_items()
-    #AvitoParser(url=urlAvito, version_main=124,  # 124 or 110
-    #            count=count, price=price, items=items).parse()
-    YoulaParser(url=urlYoula, version_main=124,  # 124 or 110
-               count=count, price=price, items=items).parse()
+    AvitoParser(url=urlAvito, version_main=110,  # 124 or 110
+                count=count, price=price, items=items).parse()
+    YoulaParser(url=urlYoula, version_main=110,  # 124 or 110
+               data_list_count=int(data_list_count)).parse()

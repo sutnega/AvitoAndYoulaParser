@@ -4,6 +4,8 @@ import json
 import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options  # для спрятанного хрома
+from selenium.webdriver.chrome.service import Service  # Для проблем драйвера
+import chromedriver_autoinstaller   #chrome driver autoinstall
 
 
 
@@ -11,19 +13,21 @@ from selenium.webdriver.chrome.options import Options  # для спрятанн
 class AvitoParser:
     # инициализация, ссылка, ключевые слова, кол-во страниц
     def __init__(self, url: str, items: list, count: int = 10, price: int = 0, version_main=None):
+        chromedriver_autoinstaller.install()
         self.url = url
         self.items = items
         self.count = count
         self.price = price
-        self.version_main = version_main
+        #self.version_main = version_main
         self.data = []
 
     # передача версии Хрома
     def __set_up(self):
+        service = Service(executable_path="chromedriver")
         options = Options()
         options.add_argument('--headless')
-        self.driver = uc.Chrome(version_main=self.version_main, options=options)
-
+        #self.driver = uc.Chrome(version_main=self.version_main, options=options)
+        self.driver = uc.Chrome( service=service,options=options)
     def __get_url(self):
         self.driver.get(self.url)
 
@@ -68,6 +72,7 @@ class AvitoParser:
             json.dump(self.data, f, ensure_ascii=False, indent=4)
 
     def parse(self):
+        chromedriver_autoinstaller.install()
         self.__set_up()
         self.__get_url()
         self.__paginator()
