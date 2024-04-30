@@ -71,7 +71,7 @@ class YoulaParser:
             else:
                 # print(name)
                 # print(city)
-                print(price)
+                # print(price)
                 # print(discount)
                 # print(link)
                 # print('-----------')
@@ -86,6 +86,7 @@ class YoulaParser:
                         'link': link
                     })
                     data = {
+                        'market':'Youla',
                         'name': name,
                         'city': city,
                         'price': price,

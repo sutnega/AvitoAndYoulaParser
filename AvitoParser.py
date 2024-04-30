@@ -48,6 +48,7 @@ class AvitoParser:
             url = title.find_element(By.CSS_SELECTOR, "[data-marker='item-title']").get_attribute("href")
             price = title.find_element(By.CSS_SELECTOR, "[itemprop='price']").get_attribute("content")
             data = {
+                'market': 'Avito',
                 'name': name,
                 'price': price,
                 'description': description,
