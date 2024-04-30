@@ -249,23 +249,74 @@ data = {
 
 html_start = """
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Market Listings</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { display: flex; justify-content: space-between; }
-        .market { width: 48%; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { text-align: left; padding: 8px; border: 1px solid #ddd; }
-        th { background-color: #f2f2f2; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        a { color: #337ab7; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+        .market {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: calc(50% - 20px);
+            overflow: hidden;
+        }
+        .market h3 {
+            background-color: #007bff;
+            color: #fff;
+            margin: 0;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .market {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
-    <h2>Market Listings</h2>
+    <h1 style="text-align: center; margin-top: 20px;">Market Listings Overview</h1>
     <div class="container">
 """
 
@@ -313,7 +364,7 @@ for market, listings in data.items():
 html_content = html_start + html_body + html_end
 
 # Writing the HTML content to a file
-with open("market_listings_side_by_side.html", "w", encoding="utf-8") as file:
+with open("market_listings_pretty.html", "w", encoding="utf-8") as file:
     file.write(html_content)
 
-print("HTML file 'market_listings_side_by_side.html' has been created successfully.")
+print("HTML file 'market_listings_pretty.html' has been created successfully.")
