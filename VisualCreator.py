@@ -2,7 +2,86 @@ import json
 
 # Assuming 'data' contains your JSON data
 data = {
-    "Youla": [ ],
+    "Youla": [
+            {
+                "market": "Youla",
+                "name": "Пульт",
+                "city": "Мытищи",
+                "price": "100",
+                "discount": "",
+                "url": "https://youla.ru/mytischi/ehlektronika/aksessuary/pult-657f629cbf47276d780d9714?source_view=search"
+            },
+            {
+                "market": "Youla",
+                "name": "пульт д/у LCD REMOTE",
+                "city": "Мытищи",
+                "price": "200",
+                "discount": "",
+                "url": "https://youla.ru/mytischi/ehlektronika/aksessuary/pult-du-lcd-remote-609c16d8f8146b360a3fd2c9?source_view=search"
+            },
+            {
+                "market": "Youla",
+                "name": "Пульт д/у DVR для видеорегистратора",
+                "city": "Мытищи",
+                "price": "200",
+                "discount": "",
+                "url": "https://youla.ru/mytischi/ehlektronika/aksessuary/pult-du-dvr-dlia-vidieorieghistratora-619cf0ae79fb5b2a7469182d?source_view=search"
+            },
+            {
+                "market": "Youla",
+                "name": "Пульт",
+                "city": "Мытищи",
+                "price": "190",
+                "discount": "",
+                "url": "https://youla.ru/mytischi/ehlektronika/aksessuary/pulty-5aa43197dbdf0f26251c0242?source_view=search"
+            },
+
+        {
+            "market": "Avito",
+            "name": "Пульт Vogele",
+            "price": "0",
+            "description": "Мы производим продажу и ремонт основных и боковых пультов асфальтоукладчиков Vogele Super 1800-2, 1600-2, 1900-3, а также микроконтроллеров на от асфальтоукладчика Vogele Super 1800-2, 1600-2, 1900-3 и микроконтроллеров на Фрезу Wirtgen 2000-2100, джостики, центральный дисплей: Vogele Super 1100-2. Vogele Super 1103-2. Vogele Super 1300-2. Vogele Super 1303-2. Vogele Super 1303-2. Vogele Super 1600-2. Vogele Super 1603-2. Vogele Super 1800-2. Vogele Super 1800-2 SM. Vogele Super 1800-2 SP. Vogele Super 1803-2. Vogele Super 1900-2. Vogele Super 2100-2. Vogele Super 2100-2. Vogele Super 2500. Vogele Super 600. Vogele Super 800.",
+            "url": "https://www.avito.ru/moskva/zapchasti_i_aksessuary/pult_vogele_3982487137"
+        },
+
+    ],
+"11": [ ],
+"You222a": [
+
+            {
+                "market": "Youla",
+                "name": "Пульт",
+                "city": "Москва",
+                "price": "200",
+                "discount": "",
+                "url": "https://youla.ru/moskva/ehlektronika/aksessuary/pult-60e0b5e001493e382d2ec093?source_view=search"
+            },
+            {
+                "market": "Youla",
+                "name": "Пульт",
+                "city": "Одинцово",
+                "price": "100",
+                "discount": "",
+                "url": "https://youla.ru/odintsovo/ehlektronika/aksessuary/pult-638861328de4a46721426d7a?source_view=search"
+            },
+            {
+                "market": "Youla",
+                "name": "Пульт",
+                "city": "Москва",
+                "price": "65",
+                "discount": "",
+                "url": "https://youla.ru/moskva/ehlektronika/aksessuary/pulty-ot-tielievizora-samsungh-5cb1ab1776bdc21b3f44b752?source_view=search"
+            },
+            {
+                "market": "Youla",
+                "name": "Пульт.",
+                "city": "Москва",
+                "price": "200",
+                "discount": "",
+                "url": "https://youla.ru/moskva/ehlektronika/aksessuary/pult-62592558e5deae7e0a77e80b?source_view=search"
+            }
+
+    ],
     "Avito": [ ]
 }
 
@@ -26,13 +105,14 @@ html_start = """
             white-space: nowrap;
             padding: 20px;
         }
-
-                .market {
+        .market {
             background-color: #fff;
             display: inline-block;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-right: 20px;
+            min-width: 600px; /* Увеличена минимальная ширина */
+            white-space: normal; /* Позволяет тексту переноситься */
         }
         .market h3 {
             background-color: #007bff;
