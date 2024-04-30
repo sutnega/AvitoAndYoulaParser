@@ -254,6 +254,8 @@ html_start = """
     <title>Market Listings</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { display: flex; justify-content: space-between; }
+        .market { width: 48%; }
         table { border-collapse: collapse; width: 100%; }
         th, td { text-align: left; padding: 8px; border: 1px solid #ddd; }
         th { background-color: #f2f2f2; }
@@ -264,16 +266,18 @@ html_start = """
 </head>
 <body>
     <h2>Market Listings</h2>
+    <div class="container">
 """
 
 html_end = """
+    </div>
 </body>
 </html>
 """
 
 
-def generate_table(market_name, listings):
-    html_content = f"<h3>{market_name}</h3>"
+def generate_market_div(market_name, listings):
+    html_content = f"<div class='market'><h3>{market_name}</h3>"
     html_content += """
     <table>
         <tr>
@@ -298,18 +302,18 @@ def generate_table(market_name, listings):
             </tr>
         """
 
-    html_content += "</table>"
+    html_content += "</table></div>"
     return html_content
 
 
 html_body = ""
 for market, listings in data.items():
-    html_body += generate_table(market, listings)
+    html_body += generate_market_div(market, listings)
 
 html_content = html_start + html_body + html_end
 
 # Writing the HTML content to a file
-with open("market_listings.html", "w", encoding="utf-8") as file:
+with open("market_listings_side_by_side.html", "w", encoding="utf-8") as file:
     file.write(html_content)
 
-print("HTML file 'market_listings.html' has been created successfully.")
+print("HTML file 'market_listings_side_by_side.html' has been created successfully.")
