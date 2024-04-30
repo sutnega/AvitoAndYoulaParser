@@ -23,6 +23,7 @@ class AvitoParser:
 
     # передача версии Хрома
     def __set_up(self):
+        chromedriver_autoinstaller.install()
         service = Service(executable_path="chromedriver")
         options = Options()
         options.add_argument('--headless')

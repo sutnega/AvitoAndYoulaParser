@@ -40,7 +40,6 @@ def input_url():
 
 def input_items():
     print('введите ключевые слова через запятую')
-    items = []
     items = (input().split(", "))
     return (items)
 
@@ -58,4 +57,4 @@ if __name__ == "__main__":
     AvitoParser(url=urlAvito, version_main=110,  # 124 or 110
                 count=count, price=price, items=items).parse()
     YoulaParser(url=urlYoula, version_main=110,  # 124 or 110
-               data_list_count=int(data_list_count)).parse()
+               price=price, data_list_count=int(data_list_count)).parse()

@@ -15,11 +15,11 @@ from selenium.webdriver.chrome.options import Options  # для спрятанн
 
 
 class YoulaParser:
-    def __init__(self, url: str, data_list_count:int, version_main=None):  # items: list, count: int = 10, price: int = 0
+    def __init__(self, url: str, data_list_count:int,price: int = 0, version_main=None):  # items: list, count: int = 10,
         self.url = url
         # self.items = items
         # self.count = count
-        # self.price = price
+        self.price = price
         self.version_main = version_main
         self.data = []
         self.data_list_count=data_list_count
@@ -56,8 +56,9 @@ class YoulaParser:
             except:
                 discount = ''
             try:
-                price = block.find('p', {'data-test-block': "ProductPrice"}).text.replace('₽руб.', '').replace('\xa0',
-                                                                                                               '')
+                price = block.find('p', {'data-test-block': "ProductPrice"}).text.replace('₽руб.', '')\
+                    .replace('\xa0','')
+                price=price.replace(' ','').replace('\u205f','')
             except:
                 price = 'нет цены'
             try:
@@ -70,27 +71,29 @@ class YoulaParser:
             else:
                 # print(name)
                 # print(city)
-                # print(price)
+                print(price)
                 # print(discount)
                 # print(link)
                 # print('-----------')
 
-                data_list.append({
-                    'name': name,
-                    'city': city,
-                    'price': price,
-                    'discount': discount,
-                    'link': link
-                })
-                data = {
-                    'name': name,
-                    'city': city,
-                    'price': price,
-                    'discount': discount,
-                    'url': link
+                if int(price) <= self.price:
 
-                }
-                self.data.append(data)
+                    data_list.append({
+                        'name': name,
+                        'city': city,
+                        'price': price,
+                        'discount': discount,
+                        'link': link
+                    })
+                    data = {
+                        'name': name,
+                        'city': city,
+                        'price': price,
+                        'discount': discount,
+                        'url': link
+
+                    }
+                    self.data.append(data)
         self.__save_data()
         return data_list
 
@@ -156,9 +159,11 @@ class YoulaParser:
         self.__save_exel(data)
 
 
+"""
 if __name__ == "__main__":
     url = input(
         'Введите ссылку на раздел, с заранее выбранными характеристиками (ценовой диапазон, сроки размещения и тд):\n')
     print('Запуск парсера...')
     YoulaParser(url=url, version_main=110,data_list_count=data_list_count  # 124 or 110
                 ).parse()
+"""
