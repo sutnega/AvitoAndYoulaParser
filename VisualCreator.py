@@ -1,3 +1,4 @@
+
 import json
 
 # Assuming 'data' contains your JSON data
@@ -5,46 +6,13 @@ with open('Avito.json', encoding='utf-8-sig') as json_file:
     Avito_data = json.load(json_file)
 with open('Youla.json', encoding='utf-8-sig') as json_file:
     Youla_data = json.load(json_file)
+#with open('Meshok.json', encoding='utf-8-sig') as json_file:
+    #Meshok_data = json.load(json_file)
 data = {
-    "Youla": Youla_data,
-
-    "Meshok": [
-
-        {
-            "market": "Youla",
-            "name": "Пульт",
-            "city": "Москва",
-            "price": "200",
-            "discount": "",
-            "url": "https://youla.ru/moskva/ehlektronika/aksessuary/pult-60e0b5e001493e382d2ec093?source_view=search"
-        },
-        {
-            "market": "Youla",
-            "name": "Пульт",
-            "city": "Одинцово",
-            "price": "100",
-            "discount": "",
-            "url": "https://youla.ru/odintsovo/ehlektronika/aksessuary/pult-638861328de4a46721426d7a?source_view=search"
-        },
-        {
-            "market": "Youla",
-            "name": "Пульт",
-            "city": "Москва",
-            "price": "65",
-            "discount": "",
-            "url": "https://youla.ru/moskva/ehlektronika/aksessuary/pulty-ot-tielievizora-samsungh-5cb1ab1776bdc21b3f44b752?source_view=search"
-        },
-        {
-            "market": "Youla",
-            "name": "Пульт.",
-            "city": "Москва",
-            "price": "200",
-            "discount": "",
-            "url": "https://youla.ru/moskva/ehlektronika/aksessuary/pult-62592558e5deae7e0a77e80b?source_view=search"
-        }
-
-    ],
-    "Avito": Avito_data
+    "Avito": Avito_data,
+    "Meshok": Avito_data,
+#    "Meshok": Meshok_data,
+    "Youla": Youla_data
 }
 
 
@@ -64,7 +32,7 @@ html_start = """
             color: #333;
         }
         .scroll-container {
-            overflow-x: auto;
+            
             white-space: nowrap;
             padding: 20px;
         }
