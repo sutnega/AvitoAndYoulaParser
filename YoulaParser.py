@@ -142,13 +142,7 @@ class YoulaParser:
         self.driver.close()
         self.driver.quit()"""
 
-    def __save_exel(self, data):
-        """Функция сохранения в файл"""
-        dataframe = pandas.DataFrame(data)
-        writer = pandas.ExcelWriter(f'data_yula.xlsx')
-        dataframe.to_excel(writer, 'data_yula')
-        writer._save()
-        print(f'Сбор данных завершен. Данные сохранены в файл "data_yula.xlsx"')
+
 
     def __save_data(self):
         with open("Youla.json", "w", encoding='utf-8') as f:
@@ -157,7 +151,6 @@ class YoulaParser:
         self.__set_up()
         self.__get_url()
         data = self.__parser(self.url, self.data_list_count)
-        self.__save_exel(data)
 
 
 """
