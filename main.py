@@ -54,7 +54,9 @@ if __name__ == "__main__":
     print("макс ограничение по цене")
     price = int(input())
     items = input_items()
-    AvitoParser(url=urlAvito, version_main=110,  # 124 or 110
+    AvitoParser(url=urlAvito, version_main=124,  # 124 or 110
                 count=count, price=price, items=items).parse()
-    YoulaParser(url=urlYoula, version_main=110,  # 124 or 110
+    YoulaParser(url=urlYoula, version_main=124,  # 124 or 110
                price=price, data_list_count=int(data_list_count)).parse()
+    with open("VisualCreator.py") as file:
+        exec(file.read())

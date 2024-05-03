@@ -6,7 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options  # для спрятанного хрома
 from selenium.webdriver.chrome.service import Service  # Для проблем драйвера
 import chromedriver_autoinstaller   #chrome driver autoinstall
-
+import random
+import time
 
 
 
@@ -31,6 +32,12 @@ class AvitoParser:
         self.driver = uc.Chrome( service=service,options=options)
     def __get_url(self):
         self.driver.get(self.url)
+        if "Доступ ограничен" in self.driver.get_title():
+            time.sleep(10)
+            raise Exception("Перезапуск из-за блокировки IP")
+
+        self.driver.open_new_window()  # сразу открываем и вторую вкладку
+        self.driver.switch_to_window(window=0)
 
     def __paginator(self):
         while self.driver.find_elements(By.CSS_SELECTOR,
