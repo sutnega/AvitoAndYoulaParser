@@ -156,7 +156,7 @@ def generate_market_div(market_name, listings, market_id):
     """
     for item in listings:
         name = item.get("name", "N/A")
-        city_or_description = item.get("city", item.get("description", "N/A"))
+        city_or_description = item.get("description", item.get("city", "N/A"))
         price = item.get("price", "N/A")
         url = item.get("url", "#")
         html_content += f"""
