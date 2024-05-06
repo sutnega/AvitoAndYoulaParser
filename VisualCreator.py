@@ -214,4 +214,6 @@ with open("market_listings_sortable.html", "w", encoding="utf-8") as file:
 print("HTML файл 'market_listings_sortable.html' успешно создан.")
 print("HTML file 'market_listings_sortable.html' has been created")
 
-webbrowser.open_new_tab('helloworld.html')
+import webbrowser
+url = 'market_listings_sortable.html'
+webbrowser.open(url, new=2)  # open in new tab
