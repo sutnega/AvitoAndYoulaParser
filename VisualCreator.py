@@ -42,8 +42,10 @@ html_start = """
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-right: 20px;
-            min-width: 600px; /* Увеличена минимальная ширина */
+            min-width: 400px; /* Увеличена минимальная ширина */
             white-space: normal; /* Позволяет тексту переноситься */
+            
+            width: 40%;
         }
         .market h3 {
             background-color: #007bff;
@@ -52,11 +54,36 @@ html_start = """
             padding: 10px 20px;
         }
         table {
+            table-layout: fixed;
             width: 100%;
             border-collapse: collapse;
             margin-right: 20px; /* Ensure there's space between tables */
         }
+        .table-cell {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table-cell-name {
+            width: 30%; /* Задайте ширину столбца с именем */
+        }
+
+        .table-cell-city {
+         width: 50%; /* Задайте ширину столбца с городом/описанием */
+        }
+
+        .table-cell-price {
+         width: 10%; /* Задайте ширину столбца с ценой */
+        }
+
+        .table-cell-url {
+            width: 10%; /* Задайте ширину столбца с URL */
+        }
         th, td {
+            resize: horizontal; /* Allow horizontal resizing */
+            overflow: auto; /* Add scrollbars if content overflows */
+            min-width: 100px; /* Set minimum width for columns */
+            
             text-align: left;
             padding: 12px;
             border-bottom: 1px solid #ddd;
@@ -161,10 +188,10 @@ def generate_market_div(market_name, listings, market_id):
         url = item.get("url", "#")
         html_content += f"""
             <tr>
-                <td>{name}</td>
-                <td>{city_or_description}</td>
-                <td>{price}</td>
-                <td><a href="{url}" target="_blank">Link</a></td>
+                <td class="table-cell table-cell-name">{name}</td>
+                <td class="table-cell table-cell-city">{city_or_description}</td>
+                <td class="table-cell table-cell-price">{price}</td>
+                <td class="table-cell table-cell-url"><a href="{url}" target="_blank">Link</a></td>
             </tr>
         """
 
@@ -185,3 +212,6 @@ with open("market_listings_sortable.html", "w", encoding="utf-8") as file:
     file.write(html_content)
 
 print("HTML файл 'market_listings_sortable.html' успешно создан.")
+print("HTML file 'market_listings_sortable.html' has been created")
+
+webbrowser.open_new_tab('helloworld.html')
