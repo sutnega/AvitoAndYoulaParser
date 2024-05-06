@@ -36,7 +36,7 @@ class YoulaParser:
         options.add_argument('--log-level=3')
         self.driver = uc.Chrome(version_main=self.version_main, options=options)
 
-    def __get_content_page(self, html):
+    def __parse_page(self, html):
         """Функция сбора данных с прогружаемой страницы"""
         soup = BeautifulSoup(html, 'html.parser')
         blocks = soup.find_all('div', {"data-test-component": "ProductOrAdCard"})
@@ -127,7 +127,7 @@ class YoulaParser:
             time.sleep(1)
             data_list_pages = []
             while True:
-                data_list_pages.extend(self.__get_content_page(self.driver.page_source))
+                data_list_pages.extend(self.__parse_page(self.driver.page_source))
 
                 # скролим один раз
                 self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -185,11 +185,3 @@ class YoulaParser:
 
 
 
-"""
-if __name__ == "__main__":
-    url = input(
-        'Введите ссылку на раздел, с заранее выбранными характеристиками (ценовой диапазон, сроки размещения и тд):\n')
-    print('Запуск парсера...')
-    YoulaParser(url=url, version_main=110,data_list_count=data_list_count  # 124 or 110
-                ).parse()
-"""

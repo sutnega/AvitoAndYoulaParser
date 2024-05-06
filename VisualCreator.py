@@ -10,9 +10,9 @@ with open('Youla.json', encoding='utf-8-sig') as json_file:
     #Meshok_data = json.load(json_file)
 data = {
     "Avito": Avito_data,
-    "Meshok": Avito_data,
+    "Youla": Youla_data,
 #    "Meshok": Meshok_data,
-    "Youla": Youla_data
+    "Meshok": Avito_data
 }
 
 
@@ -22,7 +22,7 @@ html_start = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Listings</title>
+    <title>Сбор данных Доски Объявлений</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -104,7 +104,7 @@ html_start = """
     </style>
 </head>
 <body>
-    <h1 style="text-align: center; margin-top: 20px;">Market Listings Overview</h1>
+    <h1 style="text-align: center; margin-top: 20px;">Сбор данных Доски Объявлений</h1>
     <div class="scroll-container">
 """
 
@@ -211,8 +211,8 @@ html_content = html_start + html_body + html_end
 with open("market_listings_sortable.html", "w", encoding="utf-8") as file:
     file.write(html_content)
 
-print("HTML файл 'market_listings_sortable.html' успешно создан.")
-print("HTML file 'market_listings_sortable.html' has been created")
+print("HTML файл 'market_listings.html' успешно создан.")
+print("HTML file 'market_listings.html' has been created")
 
 import webbrowser
 url = 'market_listings_sortable.html'
