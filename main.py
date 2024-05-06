@@ -20,7 +20,7 @@ def input_url():
     urlYoula = "https://youla.ru/?q=пульт"
     urlAvito = "https://www.avito.ru/moskva_i_mo?q=пульт"
     print("1.Ввести свой запрос")
-    print("2.Использовать дефолт юрл")
+    print("2.Использовать шаблон поиска")
     answer = input()
     match answer:
         case '1':
@@ -54,9 +54,13 @@ if __name__ == "__main__":
     print("макс ограничение по цене")
     price = int(input())
     items = input_items()
+    print('Поиск на Авито начат')
     AvitoParser(url=urlAvito, version_main=124,  # 124 or 110
                 count=count, price=price, items=items).parse()
+    print('Поиск на Авито завершен')
+    print('Поиск на Юле начат')
     YoulaParser(url=urlYoula, version_main=124,  # 124 or 110
                price=price, data_list_count=int(data_list_count)).parse()
+    print('Поиск на Юле завершен')
     with open("VisualCreator.py") as file:
         exec(file.read())

@@ -78,7 +78,8 @@ class YoulaParser:
                 # print(discount)
                 # print(link)
                 # print('-----------')
-
+                if price == 'Бесплатно':
+                    price=0
                 if int(price) <= self.price:
                     description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
                     description = description.replace('Показать на карте ↓', ' ').replace('Описание', ' Описание: ')
@@ -147,7 +148,7 @@ class YoulaParser:
                     break
             return data_list_pages
         finally:
-            print("увы")
+            print("завершение поиска на Юле")
             pass
 
         """except Exception as ex:
@@ -182,9 +183,6 @@ class YoulaParser:
         self.__get_url()
         data = self.__parser(self.url, self.data_list_count)
 
-        product_url = "https://youla.ru/mytischi/ehlektronika/televizory-proektory/tielievizor-661ba8d2d5997555940208b4"
-        description = self.__get_description(product_url)
-        print(f"{description}")
 
 
 """

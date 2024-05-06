@@ -1,7 +1,7 @@
-
+# -*- coding: utf-8 -*-
 import json
 
-# Assuming 'data' contains your JSON data
+# содержит ваши JSON данные
 with open('Avito.json', encoding='utf-8-sig') as json_file:
     Avito_data = json.load(json_file)
 with open('Youla.json', encoding='utf-8-sig') as json_file:
@@ -184,4 +184,4 @@ html_content = html_start + html_body + html_end
 with open("market_listings_sortable.html", "w", encoding="utf-8") as file:
     file.write(html_content)
 
-print("HTML file 'market_listings_sortable.html' has been created successfully.")
+print("HTML файл 'market_listings_sortable.html' успешно создан.")

@@ -69,7 +69,7 @@ class AvitoParser:
 
             # print(name, description, url, price, )
         self.__save_data()
-        print('страница' + str(self.count))
+        print('осталось страниц ' + str(self.count-1))
 
     def __save_data(self):
         with open("Avito.json", "w", encoding='utf-8') as f:
