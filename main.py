@@ -11,11 +11,6 @@ from YoulaParser import YoulaParser
 import chromedriver_autoinstaller as chromedriver
 
 
-GLOBAL_PRICE = 0
-
-
-
-
 def input_url():
     urlYoula = "https://youla.ru/?q=пульт"
     urlAvito = "https://www.avito.ru/moskva_i_mo?q=пульт"
@@ -55,12 +50,21 @@ if __name__ == "__main__":
     price = int(input())
     items = input_items()
     print('Поиск на Авито начат')
-    AvitoParser(url=urlAvito, version_main=124,  # 124 or 110
+    try:AvitoParser(url=urlAvito, version_main=110,  # 124 or 110
+                count=count, price=price, items=items).parse()
+    except Exception as e:
+        AvitoParser(url=urlAvito, version_main=124,  # 124 or 110
                 count=count, price=price, items=items).parse()
     print('Поиск на Авито завершен')
     print('Поиск на Юле начат')
-    YoulaParser(url=urlYoula, version_main=124,  # 124 or 110
+    try:
+        YoulaParser(url=urlYoula, version_main=110,  # 124 or 110
                price=price, data_list_count=int(data_list_count)).parse()
+    except Exception as e:
+        YoulaParser(url=urlYoula, version_main=124,  # 124 or 110
+                    price=price, data_list_count=int(data_list_count)).parse()
     print('Поиск на Юле завершен')
-    with open("VisualCreator.py") as file:
-        exec(file.read())
+
+    
+    from subprocess import Popen
+    Popen('python VisualCreator.py')
