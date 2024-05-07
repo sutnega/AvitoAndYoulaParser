@@ -31,7 +31,8 @@ def input_url(minPrice, maxPrice):
             urlAvito = 'https://www.avito.ru/moskva_i_mo?q=' + my_request
             #urlYoula = 'https://youla.ru/?q=' + my_request
             urlYoula = 'https://youla.ru/all?attributes[price][to]='+maxPrice+'00&attributes[price][from]='+minPrice+'00&q='+ my_request
-            urlMeshok = 'https://meshok.net/listing?search=' + my_request
+            #urlMeshok = 'https://meshok.net/listing?search=' + my_request
+            urlMeshok = 'https://meshok.net/listing?f_p=' + minPrice + '&search=' + my_request + '&to_p=' + maxPrice
             print(urlAvito)
             print(urlYoula)
             print(urlMeshok)
