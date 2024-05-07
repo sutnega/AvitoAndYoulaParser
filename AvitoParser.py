@@ -21,6 +21,7 @@ class AvitoParser:
         self.price = price
         #self.version_main = version_main
         self.data = []
+        self.unique_urls = []
 
     # передача версии Хрома
     def __set_up(self):
@@ -59,13 +60,15 @@ class AvitoParser:
             }
             if price == 'Бесплатно':
                 price = 0
-            if self.items!=['']:
-                if any([item.lower() in description.lower() for item in self.items]) and int(price) <= self.price:
+            if url not in self.unique_urls:
+                self.unique_urls.append(url)
+                if self.items!=['']:
+                    if any([item.lower() in description.lower() for item in self.items]) and int(price) <= self.price:
+                        self.data.append(data)
+                        print(data)
+                elif int(price) <= self.price:
                     self.data.append(data)
                     print(data)
-            elif int(price) <= self.price:
-                self.data.append(data)
-                print(data)
 
             # print(name, description, url, price, )
         self.__save_data()

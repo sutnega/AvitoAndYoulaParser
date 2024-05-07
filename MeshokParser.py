@@ -23,6 +23,7 @@ class MeshokParser:
         self.price = price
         self.version_main = version_main
         self.data = []
+        self.unique_links =[]
         self.data_list_count = data_list_count
         self.numberOfItems = data_list_count
 
@@ -80,29 +81,31 @@ class MeshokParser:
                 # print('-----------')
                 if price == 'Бесплатно':
                     price = 0
-                if price!='нет цены':
-                    if int(round(float(price))) <= self.price :
-                        #description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
-                        description = 'not chosen'
-                        description = description.replace(' ', ' ').replace(' ', ' ').replace(' ', ' ')
+                if link not in self.unique_links:
+                    self.unique_links.append(link)
+                    if price!='нет цены':
+                        if int(round(float(price))) <= self.price :
+                            #description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
+                            description = 'not chosen'
+                            description = description.replace(' ', ' ').replace(' ', ' ').replace(' ', ' ')
 
-                        data_list.append({
-                            'name': name,
-                            'city': city,
-                            'description': description,
-                            'price': price,
-                            'link': link
-                        })
-                        data = {
-                            'market': 'Meshok',
-                            'name': name,
-                            'city': city,
-                            'description': description,
-                            'price': price,
-                            'url': link
+                            data_list.append({
+                                'name': name,
+                                'city': city,
+                                'description': description,
+                                'price': price,
+                                'link': link
+                            })
+                            data = {
+                                'market': 'Meshok',
+                                'name': name,
+                                'city': city,
+                                'description': description,
+                                'price': price,
+                                'url': link
 
-                        }
-                        self.data.append(data)
+                            }
+                            self.data.append(data)
         self.__save_data()
         return data_list
 
@@ -136,7 +139,7 @@ class MeshokParser:
                 last_height = new_height
                 print(f'Собрано {len(data_list_pages)} позиций')
                 # проверка на количество выдачи
-                if len(data_list_pages) >= int(data_list_count):
+                if len(self.unique_links) >= int(data_list_count):
                     break
             return data_list_pages
         finally:

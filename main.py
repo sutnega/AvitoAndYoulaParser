@@ -12,10 +12,16 @@ from MeshokParser import MeshokParser
 import chromedriver_autoinstaller as chromedriver
 
 
-def input_url():
-    urlYoula = "https://youla.ru/?q=пульт"
+def input_url(minPrice, maxPrice):
+    if minPrice=='':minPrice=0
+    if maxPrice == '':maxPrice=1000
+    minPrice=str(minPrice)
+    maxPrice=str(maxPrice)
+    urlYoula = 'https://youla.ru/all?attributes[price][to]=' + maxPrice + '00&attributes[price][from]=' + minPrice + '00&q=пульт'
+    #urlYoula = "https://youla.ru/?q=пульт"
     urlAvito = "https://www.avito.ru/moskva_i_mo?q=пульт"
-    urlMeshok ='https://meshok.net/listing?search=пульт'
+    #urlMeshok ='https://meshok.net/listing?search=пульт'
+    urlMeshok = 'https://meshok.net/listing?f_p=' + minPrice + '&search=' +'пульт'+ '&to_p=' + maxPrice
     print("1.Ввести свой запрос")
     print("2.Использовать шаблон поиска")
     answer = input()
@@ -23,7 +29,8 @@ def input_url():
         case '1':
             my_request = input()
             urlAvito = 'https://www.avito.ru/moskva_i_mo?q=' + my_request
-            urlYoula = 'https://youla.ru/?q=' + my_request
+            #urlYoula = 'https://youla.ru/?q=' + my_request
+            urlYoula = 'https://youla.ru/all?attributes[price][to]='+maxPrice+'00&attributes[price][from]='+minPrice+'00&q='+ my_request
             urlMeshok = 'https://meshok.net/listing?search=' + my_request
             print(urlAvito)
             print(urlYoula)
@@ -46,37 +53,39 @@ def input_items():
 
 if __name__ == "__main__":
     chromedriver.install()
-    url =input_url()
+    print("мин ограничение по цене")
+    minPrice = int(input())
+    print("макс ограничение по цене")
+    maxPrice = int(input())
+    url =input_url(minPrice,maxPrice)
     urlAvito = url[0]
     urlYoula = url[1]
     urlMeshok = url[2]
     count = int(input(('Ограничение по страницам на Авито:\n')))
     data_list_count = input('Сколько примерно товаров нужно найти на Юле и Мешке? (или Enter, Стандартное значение: 50):\n')
-    print("макс ограничение по цене")
-    price = int(input())
     items = input_items()
     print('Поиск на Авито начат')
     try:AvitoParser(url=urlAvito, version_main=110,  # 124 or 110
-                count=count, price=price, items=items).parse()
+                count=count, price=maxPrice, items=items).parse()
     except Exception as e:
         AvitoParser(url=urlAvito, version_main=110,  # 124 or 110
-                count=count, price=price, items=items).parse()
+                count=count, price=maxPrice, items=items).parse()
     print('Поиск на Авито завершен')
     print('Поиск на Юле начат')
     try:
         YoulaParser(url=urlYoula, version_main=110,  # 124 or 110
-                    price=price, data_list_count=int(data_list_count)).parse()
+                    price=maxPrice, data_list_count=int(data_list_count)).parse()
     except Exception as e:
         YoulaParser(url=urlYoula, version_main=124,  # 124 or 110
-                    price=price, data_list_count=int(data_list_count)).parse()
+                    price=maxPrice, data_list_count=int(data_list_count)).parse()
     print('Поиск на Юле завершен')
     print('Поиск на Мешке начат')
     try:
         MeshokParser(url=urlMeshok, version_main=110, data_list_count=int(data_list_count),  # 124 or 110
-                     price=price).parse()
+                     price=maxPrice).parse()
     except Exception as e: \
             MeshokParser(url=urlMeshok, version_main=124, data_list_count=int(data_list_count),  # 124 or 110
-                         price=price).parse()
+                         price=maxPrice).parse()
     print('Поиск на Мешке завершен')
 
 

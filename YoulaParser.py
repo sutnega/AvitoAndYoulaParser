@@ -23,6 +23,7 @@ class YoulaParser:
         self.price = price
         self.version_main = version_main
         self.data = []
+        self.unique_links=[]
         self.data_list_count = data_list_count
 
     def __get_url(self):
@@ -80,38 +81,32 @@ class YoulaParser:
                 # print('-----------')
                 if price == 'Бесплатно':
                     price=0
-                if int(price) <= self.price:
-                    #description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
-                    description = 'not chosen'
-                    description = description.replace('Показать на карте ↓', ' ').replace('Описание', ' Описание: ')
-                    description = description.replace('Узнайте большеПоказать номерНаписать продавцу',' ')
-                    description = description.replace('В избранном',' В избранном: ')
-                    description = description.replace('Просмотры',' Просмотры: ')
-                    description = description.replace('Размещено',' Размещено: ')
-                    description = description.replace('Местоположение',' Местоположение: ')
-                    description = description.replace('Категория',' Категория: ')
-                    description = description.replace('Подкатегория',' Подкатегория: ')
-                    description = description.replace('Тип',' Тип: ')
+                if link not in self.unique_links:
+                    self.unique_links.append(link)
+                    if int(price) <= self.price:
+                        #description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
+                        description = 'not chosen'
 
-                    data_list.append({
-                        'name': name,
-                        'city': city,
-                        'description':description,
-                        'price': price,
-                        'discount': discount,
-                        'link': link
-                    })
-                    data = {
-                        'market': 'Youla',
-                        'name': name,
-                        'city': city,
-                        'description': description,
-                        'price': price,
-                        'discount': discount,
-                        'url': link
 
-                    }
-                    self.data.append(data)
+                        data_list.append({
+                            'name': name,
+                            'city': city,
+                            'description':description,
+                            'price': price,
+                            'discount': discount,
+                            'link': link
+                        })
+                        data = {
+                            'market': 'Youla',
+                            'name': name,
+                            'city': city,
+                            'description': description,
+                            'price': price,
+                            'discount': discount,
+                            'url': link
+
+                        }
+                        self.data.append(data)
         self.__save_data()
         return data_list
 
@@ -145,7 +140,7 @@ class YoulaParser:
                 last_height = new_height
                 print(f'Собрано {len(data_list_pages)} позиций')
                 # проверка на количество выдачи
-                if len(data_list_pages) >= int(data_list_count):
+                if len(self.unique_links) >= int(data_list_count):
                     break
             return data_list_pages
         finally:
@@ -168,6 +163,21 @@ class YoulaParser:
         except Exception as e:
             print(f"Error while scraping description: {e}")
             return None
+
+    def __write_descriptions(self,):
+
+        #description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
+        description = 'not chosen'
+        description = description.replace('Показать на карте ↓', ' ').replace('Описание', ' Описание: ')
+        description = description.replace('Узнайте большеПоказать номерНаписать продавцу', ' ')
+        description = description.replace('В избранном', ' В избранном: ')
+        description = description.replace('Просмотры', ' Просмотры: ')
+        description = description.replace('Размещено', ' Размещено: ')
+        description = description.replace('Местоположение', ' Местоположение: ')
+        description = description.replace('Категория', ' Категория: ')
+        description = description.replace('Подкатегория', ' Подкатегория: ')
+        description = description.replace('Тип', ' Тип: ')
+    pass
 
     def __save_data(self):
         with open("Youla.json", "w", encoding='utf-8') as f:
