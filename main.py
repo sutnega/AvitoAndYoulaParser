@@ -50,8 +50,8 @@ if __name__ == "__main__":
     urlAvito = url[0]
     urlYoula = url[1]
     urlMeshok = url[2]
-    count = int(input(('Ограничение по страницам:\n')))
-    data_list_count = input('Сколько примерно товаров нужно найти? (или Enter, Стандартное значение: 50):\n')
+    count = int(input(('Ограничение по страницам на Авито:\n')))
+    data_list_count = input('Сколько примерно товаров нужно найти на Юле и Мешке? (или Enter, Стандартное значение: 50):\n')
     print("макс ограничение по цене")
     price = int(input())
     items = input_items()

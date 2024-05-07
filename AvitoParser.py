@@ -80,3 +80,11 @@ class AvitoParser:
         self.__set_up()
         self.__get_url()
         self.__paginator()
+
+
+"""except Exception as ex:
+            print(f'Непредвиденная ошибка: {ex}')
+            self.driver.close()
+            self.driver.quit()
+        self.driver.close()
+        self.driver.quit()"""

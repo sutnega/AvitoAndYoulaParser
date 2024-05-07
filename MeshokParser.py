@@ -32,7 +32,7 @@ class MeshokParser:
     def __set_up(self):
         chromedriver.install()
         options = Options()
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument('--log-level=3')
         self.driver = uc.Chrome(version_main=self.version_main, options=options)
@@ -60,9 +60,9 @@ class MeshokParser:
                 city = 'город не указан'
             try:
                 price = block.find('div', {'class': "priceAndIcons_35695"}).text.replace('₽руб.', '') \
-                    .replace('\xa0', '')
-                price = price.replace(' ', '').replace('\u205f', '').replace('₽', '').replace('Благотворительныйлот', '')
-
+                    .replace('\xa0', '').replace(' ', '')
+                price = price.replace('\u205f', '').replace('₽', '').replace('Благотворительныйлот', '')
+                price = price.replace(',', '.')
             except:
                 price = 'нет цены'
             try:
@@ -80,28 +80,29 @@ class MeshokParser:
                 # print('-----------')
                 if price == 'Бесплатно':
                     price = 0
-                if int(price) <= self.price:
-                    description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
+                if price!='нет цены':
+                    if int(round(float(price))) <= self.price :
+                        #description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
+                        description = 'not chosen'
+                        description = description.replace(' ', ' ').replace(' ', ' ').replace(' ', ' ')
 
-                    description = description.replace(' ', ' ').replace(' ', ' ').replace(' ', ' ')
+                        data_list.append({
+                            'name': name,
+                            'city': city,
+                            'description': description,
+                            'price': price,
+                            'link': link
+                        })
+                        data = {
+                            'market': 'Meshok',
+                            'name': name,
+                            'city': city,
+                            'description': description,
+                            'price': price,
+                            'url': link
 
-                    data_list.append({
-                        'name': name,
-                        'city': city,
-                        'description': description,
-                        'price': price,
-                        'link': link
-                    })
-                    data = {
-                        'market': 'Meshok',
-                        'name': name,
-                        'city': city,
-                        'description': description,
-                        'price': price,
-                        'url': link
-
-                    }
-                    self.data.append(data)
+                        }
+                        self.data.append(data)
         self.__save_data()
         return data_list
 

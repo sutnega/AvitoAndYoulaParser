@@ -31,7 +31,7 @@ class YoulaParser:
     def __set_up(self):
         chromedriver.install()
         options = Options()
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument('--log-level=3')
         self.driver = uc.Chrome(version_main=self.version_main, options=options)
@@ -81,8 +81,8 @@ class YoulaParser:
                 if price == 'Бесплатно':
                     price=0
                 if int(price) <= self.price:
-                    description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
-                    description = 'testing'
+                    #description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
+                    description = 'not chosen'
                     description = description.replace('Показать на карте ↓', ' ').replace('Описание', ' Описание: ')
                     description = description.replace('Узнайте большеПоказать номерНаписать продавцу',' ')
                     description = description.replace('В избранном',' В избранном: ')
