@@ -165,7 +165,14 @@ class MeshokParser:
     def parse(self):
         self.__set_up()
         self.__get_url()
-        data = self.__parser(self.url, self.data_list_count)
+        try:
+            data = self.__parser(self.url, self.data_list_count)
+        except Exception as ex:
+            print(f'Непредвиденная ошибка: {ex}')
+            self.driver.close()
+            self.driver.quit()
+        self.driver.close()
+        self.driver.quit()
 
     if __name__ == "__main__":
         url = 'https://meshok.net/listing?search=пульт'

@@ -82,6 +82,7 @@ class YoulaParser:
                     price=0
                 if int(price) <= self.price:
                     description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
+                    description = 'testing'
                     description = description.replace('Показать на карте ↓', ' ').replace('Описание', ' Описание: ')
                     description = description.replace('Узнайте большеПоказать номерНаписать продавцу',' ')
                     description = description.replace('В избранном',' В избранном: ')
@@ -175,7 +176,26 @@ class YoulaParser:
     def parse(self):
         self.__set_up()
         self.__get_url()
-        data = self.__parser(self.url, self.data_list_count)
+        try:
+            data = self.__parser(self.url, self.data_list_count)
+        except Exception as ex:
+            print(f'Непредвиденная ошибка: {ex}')
+            self.driver.close()
+            self.driver.quit()
+        self.driver.close()
+        self.driver.quit()
 
 
-
+    if __name__ == "__main__":
+        urlYoula = 'https://youla.ru/?q=пульт'
+        print(urlYoula)
+        price = 500
+        print('Запуск парсера на Юле')
+        data_list_count = int(input('Сколько примерно товаров нужно найти? (Стандарт:50)\n'))
+        from YoulaParser import YoulaParser
+        try:
+            YoulaParser(url=urlYoula, version_main=110,  # 124 or 110
+                        price=price, data_list_count=int(data_list_count)).parse()
+        except Exception as e:
+            YoulaParser(url=urlYoula, version_main=124,  # 124 or 110
+                        price=price, data_list_count=int(data_list_count)).parse()
