@@ -19,7 +19,7 @@ class AvitoParser:
         self.items = items
         self.count = count
         self.price = price
-        #self.version_main = version_main
+        self.version_main = version_main
         self.data = []
         self.unique_urls = []
 
@@ -29,8 +29,11 @@ class AvitoParser:
         service = Service(executable_path="chromedriver")
         options = Options()
         options.add_argument('--headless')
-        #self.driver = uc.Chrome(version_main=self.version_main, options=options)
-        self.driver = uc.Chrome( service=service,options=options)
+        try:
+            self.driver = uc.Chrome(service=service, options=options)
+        except Exception as e:
+            self.driver = uc.Chrome(version_main=self.version_main, options=options)
+
     def __get_url(self):
         self.driver.get(self.url)
 
