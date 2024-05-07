@@ -14,7 +14,7 @@ from selenium.webdriver.chrome.options import Options  # для спрятанн
 # pip install openpyxl
 
 
-class MesParser:
+class MeshokParser:
     def __init__(self, url: str, data_list_count: int, price: int = 0,
                  version_main=None):  # items: list, count: int = 10,
         self.url = url
@@ -24,6 +24,7 @@ class MesParser:
         self.version_main = version_main
         self.data = []
         self.data_list_count = data_list_count
+        self.numberOfItems = data_list_count
 
     def __get_url(self):
         self.driver.get(self.url)
@@ -40,7 +41,7 @@ class MesParser:
         """Функция сбора данных с прогружаемой страницы"""
         soup = BeautifulSoup(html, 'html.parser')
         blocks = soup.find_all('div', {"class": "itemCardList_743f6"})
-        print("soup blocks")
+        #print("soup blocks")
         #print(blocks)
         print("__" * 100)
 
@@ -75,7 +76,6 @@ class MesParser:
                 print(name)
                 # print(city)
                 print(price)
-                # print(discount)
                 print(link)
                 # print('-----------')
                 if price == 'Бесплатно':
@@ -168,14 +168,13 @@ class MesParser:
         data = self.__parser(self.url, self.data_list_count)
 
     if __name__ == "__main__":
-        #url = input(
-        #    'Введите ссылку на раздел, с заранее выбранными характеристиками (ценовой диапазон, сроки размещения и тд):\n')
         url = 'https://meshok.net/listing?search=пульт'
-        print('Запуск парсера...')
-        data_list_count = int(input('введите количество элементов'))
-        from MeshokParser import MesParser
-        try: MesParser(url=url, version_main=110,data_list_count=data_list_count, # 124 or 110
+        print(url)
+        print('Запуск парсера на Мешке')
+        data_list_count = int(input('Сколько примерно товаров нужно найти? (Стандарт:50)\n'))
+        from MeshokParser import MeshokParser
+        try: MeshokParser(url=url, version_main=110,data_list_count=data_list_count, # 124 or 110
                   price=1000).parse()
         except Exception as e:\
-            MesParser(url=url, version_main=124,data_list_count=data_list_count, # 124 or 110
+            MeshokParser(url=url, version_main=124,data_list_count=data_list_count, # 124 or 110
                   price=1000).parse()

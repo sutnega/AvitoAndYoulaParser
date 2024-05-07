@@ -6,13 +6,12 @@ with open('Avito.json', encoding='utf-8-sig') as json_file:
     Avito_data = json.load(json_file)
 with open('Youla.json', encoding='utf-8-sig') as json_file:
     Youla_data = json.load(json_file)
-#with open('Meshok.json', encoding='utf-8-sig') as json_file:
-    #Meshok_data = json.load(json_file)
+with open('Meshok.json', encoding='utf-8-sig') as json_file:
+    Meshok_data = json.load(json_file)
 data = {
     "Avito": Avito_data,
     "Youla": Youla_data,
-#    "Meshok": Meshok_data,
-    "Meshok": Avito_data
+    "Meshok": Meshok_data
 }
 
 

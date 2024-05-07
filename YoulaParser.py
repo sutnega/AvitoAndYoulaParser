@@ -138,7 +138,7 @@ class YoulaParser:
                 # Вычисляем новую высоту прокрутки и сравниваем с последней высотой прокрутки
                 new_height = self.driver.execute_script("return document.body.scrollHeight")
                 if data_list_count == '':
-                    data_list_count = 1000
+                    data_list_count = 50
                 if new_height == last_height:
                     break
                 last_height = new_height
@@ -151,12 +151,6 @@ class YoulaParser:
             print("завершение поиска на Юле")
             pass
 
-        """except Exception as ex:
-            print(f'Непредвиденная ошибка: {ex}')
-            self.driver.close()
-            self.driver.quit()
-        self.driver.close()
-        self.driver.quit()"""
 
     def __get_description(self, url):
         try:
