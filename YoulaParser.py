@@ -10,6 +10,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options  # для спрятанного хрома
 
+import re  # Импорт для избавления от смайликов
+
 
 # pip install openpyxl
 
@@ -32,7 +34,7 @@ class YoulaParser:
     def __set_up(self):
         chromedriver.install()
         options = Options()
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument('--log-level=3')
         self.driver = uc.Chrome(version_main=self.version_main, options=options)
@@ -116,6 +118,27 @@ class YoulaParser:
         try:
             self.driver.get(url)
             time.sleep(2)
+
+            try:
+                # Нажать на кнопку с data-test-action="SelectGeolocationClick"
+                button_geo = self.driver.find_element(By.XPATH, '//button[@data-test-action="SelectGeolocationClick"]')
+                button_geo.click()
+                time.sleep(2)  # пауза, чтобы страница успела обработать действие
+
+                # Нажать на span с текстом "Город"
+                span_city = self.driver.find_element(By.XPATH, '//span[text()="Город"]')
+                span_city.click()
+                time.sleep(2)  # пауза, чтобы страница успела обработать действие
+
+                # Нажать на div с текстом "Москва"
+                div_moscow = self.driver.find_element(By.XPATH, '//div[text()="Москва"]')
+                div_moscow.click()
+                time.sleep(2)  # пауза, чтобы страница успела обработать действие
+                self.driver.get(url)
+            except Exception as e:
+                print(f"Ошибка при клике на элемент: {e}")
+
+
             # находим высоту прокрутки
             last_height = self.driver.execute_script("return document.body.scrollHeight")
             # нажимаем page down для прогрузки первого блока
@@ -157,6 +180,8 @@ class YoulaParser:
             description_element = soup.select_one("[data-test-component='ProductDetails']")
             if description_element:
                 description = description_element.text.strip()
+                # Удаление эмодзи и других специальных символов
+                description = re.sub(r'[\u2600-\u26FF\u2700-\u27BF]', '', description)  # диапазон Unicode для эмодзи
                 return description
             else:
                 return "Description not found"
@@ -185,7 +210,7 @@ class YoulaParser:
             description = description.replace('Местоположение', ' Местоположение: ')
             description = description.replace('Категория', ' Категория: ')
             description = description.replace('Подкатегория', ' Подкатегория: ')
-            description = description.replace('Тип', ' Тип: ')
+            description = description.replace('Тип', ' Тип: ').replace('\u20bd', '').replace('\xd7', '')
             description = description.replace('Показать на карте', '').replace('\u2193', '').replace(' ', '')
             print("Modified descr:", description)
             # Обновляем description в объекте
@@ -216,7 +241,7 @@ class YoulaParser:
 
 
     if __name__ == "__main__":
-        urlYoula = 'https://youla.ru/?q=пульт'
+        urlYoula = 'https://youla.ru/all?q=гантели'
         print(urlYoula)
         price = 500
         print('Запуск парсера на Юле')
