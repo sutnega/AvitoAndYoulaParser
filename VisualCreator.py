@@ -190,7 +190,7 @@ def generate_market_div(market_name, listings, market_id):
                 <td class="table-cell table-cell-name">{name}</td>
                 <td class="table-cell table-cell-city">{city_or_description}</td>
                 <td class="table-cell table-cell-price">{price}</td>
-                <td class="table-cell table-cell-url"><a href="{url}" target="_blank">Link</a></td>
+                <td class="table-cell table-cell-url"><a href="{url}" target="_blank">Url</a></td>
             </tr>
         """
 

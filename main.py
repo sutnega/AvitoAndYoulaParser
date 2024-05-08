@@ -67,7 +67,7 @@ if __name__ == "__main__":
         'Сколько примерно товаров нужно найти на Юле и Мешке? (или Enter, Стандартное значение: 50):\n')
     items = input_items()
     print('Поиск на Авито начат')
-    try: 
+    try:
         AvitoParser(url=urlAvito, version_main=110,  # 124 or 110
                     count=count, price=int(maxPrice), items=items).parse()
     except Exception as e:

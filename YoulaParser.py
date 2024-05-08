@@ -23,7 +23,7 @@ class YoulaParser:
         self.price = price
         self.version_main = version_main
         self.data = []
-        self.unique_links=[]
+        self.unique_urls=[]
         self.data_list_count = data_list_count
 
     def __get_url(self):
@@ -32,7 +32,7 @@ class YoulaParser:
     def __set_up(self):
         chromedriver.install()
         options = Options()
-        #options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument('--log-level=3')
         self.driver = uc.Chrome(version_main=self.version_main, options=options)
@@ -66,9 +66,9 @@ class YoulaParser:
             except:
                 price = 'нет цены'
             try:
-                link = "https://youla.ru" + block.find('div').find('span').find('a').get('href')
+                url = "https://youla.ru" + block.find('div').find('span').find('a').get('href')
             except:
-                link = 'ссылка не найдена'
+                url = 'ссылка не найдена'
 
             if 'нет названия' in name:
                 pass
@@ -77,14 +77,14 @@ class YoulaParser:
                 # print(city)
                 # print(price)
                 # print(discount)
-                # print(link)
+                # print(url)
                 # print('-----------')
                 if price == 'Бесплатно':
                     price=0
-                if link not in self.unique_links:
-                    self.unique_links.append(link)
+                if url not in self.unique_urls:
+                    self.unique_urls.append(url)
                     if int(price) <= self.price:
-                        #description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
+                        #description = self.__get_description(url).replace('ПоделитьсяПожаловаться на объявление', '')
                         description = 'not chosen'
 
 
@@ -94,7 +94,7 @@ class YoulaParser:
                             'description':description,
                             'price': price,
                             'discount': discount,
-                            'link': link
+                            'url': url
                         })
                         data = {
                             'market': 'Youla',
@@ -103,7 +103,7 @@ class YoulaParser:
                             'description': description,
                             'price': price,
                             'discount': discount,
-                            'url': link
+                            'url': url
 
                         }
                         self.data.append(data)
@@ -140,7 +140,7 @@ class YoulaParser:
                 last_height = new_height
                 print(f'Собрано {len(data_list_pages)} позиций')
                 # проверка на количество выдачи
-                if len(self.unique_links) >= int(data_list_count):
+                if len(self.unique_urls) >= int(data_list_count):
                     break
             return data_list_pages
         finally:
@@ -164,19 +164,37 @@ class YoulaParser:
             print(f"Error while scraping description: {e}")
             return None
 
-    def __write_descriptions(self,):
+    def __write_descriptions(self):
+        # Путь к исходному файлу
+        input_filename = 'Youla.json'
+        # Путь к файлу для сохранения изменённых данных
+        output_filename = 'Youla_descriptions.json'
+        # Считываем данные из исходного JSON-файла
+        with open(input_filename, 'r', encoding='utf-8-sig') as file:
+            Youladata = json.load(file)
+        # Обрабатываем каждый элемент в массиве
+        for item in Youladata:
+            # Извлекаем URL и выводим его
+            url = item.get('url')
+            description = self.__get_description(url).replace('ПоделитьсяПожаловаться на объявление', '')
+            description = description.replace('Показать на карте ↓', ' ').replace('Описание', ' Описание: ')
+            description = description.replace('Узнайте большеПоказать номерНаписать продавцу', ' ')
+            description = description.replace('В избранном', ' В избранном: ')
+            description = description.replace('Просмотры', ' Просмотры: ')
+            description = description.replace('Размещено', ' Размещено: ')
+            description = description.replace('Местоположение', ' Местоположение: ')
+            description = description.replace('Категория', ' Категория: ')
+            description = description.replace('Подкатегория', ' Подкатегория: ')
+            description = description.replace('Тип', ' Тип: ')
+            description = description.replace('Показать на карте', '').replace('\u2193', '').replace(' ', '')
+            print("Modified descr:", description)
+            # Обновляем description в объекте
+            item['description'] = description
+        # Сохраняем изменённые данные в новый файл
+        with open(output_filename, 'w') as file:
+            json.dump(Youladata, file,ensure_ascii=False, indent=4)
 
-        #description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
-        description = 'not chosen'
-        description = description.replace('Показать на карте ↓', ' ').replace('Описание', ' Описание: ')
-        description = description.replace('Узнайте большеПоказать номерНаписать продавцу', ' ')
-        description = description.replace('В избранном', ' В избранном: ')
-        description = description.replace('Просмотры', ' Просмотры: ')
-        description = description.replace('Размещено', ' Размещено: ')
-        description = description.replace('Местоположение', ' Местоположение: ')
-        description = description.replace('Категория', ' Категория: ')
-        description = description.replace('Подкатегория', ' Подкатегория: ')
-        description = description.replace('Тип', ' Тип: ')
+        print(f"Modified data has been saved to {output_filename}")
     pass
 
     def __save_data(self):
@@ -188,6 +206,7 @@ class YoulaParser:
         self.__get_url()
         try:
             data = self.__parser(self.url, self.data_list_count)
+            self.__write_descriptions()
         except Exception as ex:
             print(f'Непредвиденная ошибка: {ex}')
             self.driver.close()
