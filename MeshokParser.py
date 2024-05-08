@@ -1,4 +1,6 @@
 import json
+import re
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import time
@@ -161,6 +163,40 @@ class MeshokParser:
         except Exception as e:
             print(f"Error while scraping description: {e}")
             return None
+    def __write_descriptions(self):
+        # Путь к исходному файлу
+        input_filename = 'Meshok.json'
+        # Путь к файлу для сохранения изменённых данных
+        output_filename = 'Meshok_descriptions.json'
+        # Считываем данные из исходного JSON-файла
+        with open(input_filename, 'r', encoding='utf-8-sig') as file:
+            Meshokdata = json.load(file)
+        # Обрабатываем каждый элемент в массиве
+        for item in Meshokdata:
+            # Извлекаем URL и выводим его
+            url = item.get('url')
+            description = self.__get_description(url).replace('ПоделитьсяПожаловаться на объявление', '')
+            description = description.replace('Показать на карте ↓', ' ').replace('Описание', ' Описание: ')
+            description = description.replace('Узнайте большеПоказать номерНаписать продавцу', ' ')
+            description = description.replace('В избранном', ' В избранном: ')
+            description = description.replace('Просмотры', ' Просмотры: ')
+            description = description.replace('Размещено', ' Размещено: ')
+            description = description.replace('Местоположение', ' Местоположение: ')
+            description = description.replace('Категория', ' Категория: ')
+            description = description.replace('Подкатегория', ' Подкатегория: ')
+            description = description.replace('Тип', ' Тип: ').replace('\u20bd', '').replace('\xd7', '')
+            description = description.replace('Показать на карте', '').replace('\u2193', '').replace(' ', '')
+            description = description.replace(' ', ' ').replace(' ', ' ').replace(' ', ' ')
+            description = re.sub(r"[^\w\s,.!?;:()\'\"-]+", '', description, flags=re.UNICODE)
+            print("Modified descr:", description)
+            # Обновляем description в объекте
+            item['description'] = description
+        # Сохраняем изменённые данные в новый файл
+        with open(output_filename, 'w') as file:
+            json.dump(Meshokdata, file,ensure_ascii=False, indent=4)
+
+        print(f"Modified data has been saved to {output_filename}")
+    pass
 
     def __save_data(self):
         with open("Meshok.json", "w", encoding='utf-8') as f:
@@ -171,6 +207,7 @@ class MeshokParser:
         self.__get_url()
         try:
             data = self.__parser(self.url, self.data_list_count)
+            self.__write_descriptions()
         except Exception as ex:
             print(f'Непредвиденная ошибка: {ex}')
             self.driver.close()

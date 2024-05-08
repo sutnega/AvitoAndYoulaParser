@@ -8,7 +8,7 @@ with open('Avito.json', encoding='utf-8-sig') as json_file:
 with open('Youla_descriptions.json',encoding='cp1251') as json_file:
     Youla_data = json.load(json_file)
 
-with open('Meshok.json', encoding='utf-8-sig') as json_file:
+with open('Meshok_descriptions.json', encoding='cp1251') as json_file:
     Meshok_data = json.load(json_file)
 data = {
     "Avito": Avito_data,
