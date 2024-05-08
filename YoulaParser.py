@@ -181,7 +181,7 @@ class YoulaParser:
             if description_element:
                 description = description_element.text.strip()
                 # Удаление эмодзи и других специальных символов
-                description = re.sub(r'[\u2600-\u26FF\u2700-\u27BF]', '', description)  # диапазон Unicode для эмодзи
+                #description = re.sub(r"[^а-яА-ЯёЁ ,.!?;:()\"\'-]", '', description)  # фильтрация Unicode для эмодзи
                 return description
             else:
                 return "Description not found"
@@ -212,6 +212,7 @@ class YoulaParser:
             description = description.replace('Подкатегория', ' Подкатегория: ')
             description = description.replace('Тип', ' Тип: ').replace('\u20bd', '').replace('\xd7', '')
             description = description.replace('Показать на карте', '').replace('\u2193', '').replace(' ', '')
+            description = re.sub(r"[^\w\s,.!?;:()\'\"-]+", '', description, flags=re.UNICODE)
             print("Modified descr:", description)
             # Обновляем description в объекте
             item['description'] = description

@@ -4,8 +4,10 @@ import json
 # содержит ваши JSON данные
 with open('Avito.json', encoding='utf-8-sig') as json_file:
     Avito_data = json.load(json_file)
-with open('Youla_descriptions.json') as json_file:
+
+with open('Youla_descriptions.json',encoding='cp1251') as json_file:
     Youla_data = json.load(json_file)
+
 with open('Meshok.json', encoding='utf-8-sig') as json_file:
     Meshok_data = json.load(json_file)
 data = {

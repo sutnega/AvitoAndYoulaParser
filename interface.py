@@ -8,7 +8,7 @@ from AvitoParser import AvitoParser
 from YoulaParser import YoulaParser
 from MeshokParser import MeshokParser
 import chromedriver_autoinstaller as chromedriver
-
+from subprocess import Popen
 
 class ParserInputApp(tk.Tk):
     def __init__(self):
@@ -46,6 +46,9 @@ class ParserInputApp(tk.Tk):
         # Submit button
         submit_button = ttk.Button(self, text="Start Parsing", command=self.start_parsing)
         submit_button.grid(row=9, column=1, pady=10)
+        # Button to run VisualCreator.py script
+        visual_creator_button = ttk.Button(self, text="Run Visual Creator", command=self.run_visual_creator)
+        visual_creator_button.grid(row=10, column=1, pady=10)
 
     def create_text_input(self, label_text, variable, row):
         """Creates a labeled text input field."""
@@ -131,6 +134,13 @@ class ParserInputApp(tk.Tk):
             except Exception as e:
                 print(f"Error while retrying Meshok: {e}")
 
+    def run_visual_creator(self):
+        """Runs the VisualCreator.py script."""
+        try:
+            Popen(['python', 'VisualCreator.py'])
+            print("VisualCreator.py script started.")
+        except Exception as e:
+            print(f"Failed to start VisualCreator.py: {e}")
 
 if __name__ == "__main__":
     app = ParserInputApp()
