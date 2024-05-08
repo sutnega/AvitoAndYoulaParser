@@ -134,6 +134,6 @@ class ParserInputApp(tk.Tk):
 
 if __name__ == "__main__":
     app = ParserInputApp()
-    from subprocess import Popen
-    Popen('python VisualCreator.py')
+    #from subprocess import Popen
+    #Popen('python VisualCreator.py')
     app.mainloop()
