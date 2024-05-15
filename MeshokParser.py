@@ -18,7 +18,7 @@ from selenium.webdriver.chrome.options import Options  # для спрятанн
 
 class MeshokParser:
     def __init__(self, url: str, data_list_count: int, price: int = 0,
-                 version_main=None):  # items: list, count: int = 10,
+                 version_main=None, blacklist=None):  # items: list, count: int = 10,
         self.url = url
         # self.items = items
         # self.count = count
@@ -27,7 +27,7 @@ class MeshokParser:
         self.data = []
         self.unique_links =[]
         self.data_list_count = data_list_count
-        self.numberOfItems = data_list_count
+        self.blacklist = blacklist if blacklist else []  # Инициализация blacklist
 
     def __get_url(self):
         self.driver.get(self.url)
@@ -163,6 +163,7 @@ class MeshokParser:
         except Exception as e:
             print(f"Error while scraping description: {e}")
             return None
+
     def __write_descriptions(self):
         # Путь к исходному файлу
         input_filename = 'Meshok.json'
@@ -188,6 +189,15 @@ class MeshokParser:
             description = description.replace('Показать на карте', '').replace('\u2193', '').replace(' ', '')
             description = description.replace(' ', ' ').replace(' ', ' ').replace(' ', ' ')
             description = re.sub(r"[^\w\s,.!?;:()\'\"-]+", '', description, flags=re.UNICODE)
+            #\U0001f525
+
+            """
+            #Проверка на черный список слов в описании
+            if any(black_word in description for black_word in self.blacklist):
+                print(f"Пропуск товара с названием {name} из-за наличия слов из черного списка в описании.")
+                continue
+            """
+
             print("Modified descr:", description)
             # Обновляем description в объекте
             item['description'] = description
@@ -220,9 +230,10 @@ class MeshokParser:
         print(url)
         print('Запуск парсера на Мешке')
         data_list_count = int(input('Сколько примерно товаров нужно найти? (Стандарт:50)\n'))
+        blacklist_words = ['поврежден', 'не работает', 'брак']  # Пример черного списка слов
         from MeshokParser import MeshokParser
         try: MeshokParser(url=url, version_main=110,data_list_count=data_list_count, # 124 or 110
-                  price=1000).parse()
+                  price=1000,blacklist=blacklist_words).parse()
         except Exception as e:\
             MeshokParser(url=url, version_main=124,data_list_count=data_list_count, # 124 or 110
-                  price=1000).parse()
+                  price=1000,blacklist=blacklist_words).parse()

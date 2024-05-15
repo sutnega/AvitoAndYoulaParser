@@ -213,6 +213,7 @@ class YoulaParser:
             description = description.replace('Тип', ' Тип: ').replace('\u20bd', '').replace('\xd7', '')
             description = description.replace('Показать на карте', '').replace('\u2193', '').replace(' ', '')
             description = re.sub(r"[^\w\s,.!?;:()\'\"-]+", '', description, flags=re.UNICODE)
+            description = re.sub(r"[^\w\s,.!?;:()\'\"-]+", '', description, flags=re.UNICODE)
             print("Modified descr:", description)
             # Обновляем description в объекте
             item['description'] = description

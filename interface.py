@@ -14,7 +14,7 @@ class ParserInputApp(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        self.title("Parser Input Variables")
+        self.title("Поиск на интернет-площадках")
         self.geometry("600x550")
 
         # Variables
@@ -31,23 +31,23 @@ class ParserInputApp(tk.Tk):
         self.run_meshok = tk.BooleanVar(value=True)
 
         # Create Inputs
-        self.create_text_input("Min Price:", self.min_price, 0)
-        self.create_text_input("Max Price:", self.max_price, 1)
-        self.create_text_input("Avito Page Limit:", self.count_avito, 2)
-        self.create_text_input("Youla & Meshok Item Limit:", self.data_list_count, 3)
-        self.create_text_input("Search Query:", self.search_query, 4)
-        self.create_text_input("Items (comma-separated):", self.items, 5)
+        self.create_text_input("Минимальная цена:", self.min_price, 0)
+        self.create_text_input("Максимальная цена:", self.max_price, 1)
+        self.create_text_input("Ограничение страниц Авито:", self.count_avito, 2)
+        self.create_text_input("Ограничение товаров Юла и Мешок:", self.data_list_count, 3)
+        self.create_text_input("Поисковой запрос:", self.search_query, 4)
+        self.create_text_input("Ключевые слова (через запятую):", self.items, 5)
 
         # Parser selection checkboxes
-        self.create_parser_checkbox("Run Avito Parser:", self.run_avito, 6)
-        self.create_parser_checkbox("Run Youla Parser:", self.run_youla, 7)
-        self.create_parser_checkbox("Run Meshok Parser:", self.run_meshok, 8)
+        self.create_parser_checkbox("Запустить поиск на Avito :", self.run_avito, 6)
+        self.create_parser_checkbox("Запустить поиск на Youla Parser:", self.run_youla, 7)
+        self.create_parser_checkbox("Запустить поиск на Meshok:", self.run_meshok, 8)
 
         # Submit button
-        submit_button = ttk.Button(self, text="Start Parsing", command=self.start_parsing)
+        submit_button = ttk.Button(self, text="Запустить поиск", command=self.start_parsing)
         submit_button.grid(row=9, column=1, pady=10)
         # Button to run VisualCreator.py script
-        visual_creator_button = ttk.Button(self, text="Run Visual Creator", command=self.run_visual_creator)
+        visual_creator_button = ttk.Button(self, text="Вывести результаты", command=self.run_visual_creator)
         visual_creator_button.grid(row=10, column=1, pady=10)
 
     def create_text_input(self, label_text, variable, row):
