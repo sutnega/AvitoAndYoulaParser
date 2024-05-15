@@ -17,7 +17,7 @@ from selenium.webdriver.chrome.options import Options  # для спрятанн
 
 
 class MeshokParser:
-    def __init__(self, url: str, data_list_count: int, price: int = 0,
+    def __init__(self, url: str, data_list_count: int,need_description: bool=1, price: int = 0,
                  version_main=None, blacklist=None):  # items: list, count: int = 10,
         self.url = url
         # self.items = items
@@ -27,6 +27,7 @@ class MeshokParser:
         self.data = []
         self.unique_links =[]
         self.data_list_count = data_list_count
+        self.need_description = need_description
         self.blacklist = blacklist if blacklist else []  # Инициализация blacklist
 
     def __get_url(self):
@@ -217,7 +218,8 @@ class MeshokParser:
         self.__get_url()
         try:
             data = self.__parser(self.url, self.data_list_count)
-            self.__write_descriptions()
+            if self.need_description:
+                self.__write_descriptions()
         except Exception as ex:
             print(f'Непредвиденная ошибка: {ex}')
             self.driver.close()

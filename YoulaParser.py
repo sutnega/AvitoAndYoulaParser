@@ -17,7 +17,7 @@ import re  # Импорт для избавления от смайликов
 
 
 class YoulaParser:
-    def __init__(self, url: str, data_list_count: int, price: int = 0,
+    def __init__(self, url: str, data_list_count: int,need_description: bool=1, price: int = 0,
                  version_main=None):  # items: list, count: int = 10,
         self.url = url
         # self.items = items
@@ -27,6 +27,7 @@ class YoulaParser:
         self.data = []
         self.unique_urls=[]
         self.data_list_count = data_list_count
+        self.need_description = need_description
 
     def __get_url(self):
         self.driver.get(self.url)
@@ -34,7 +35,7 @@ class YoulaParser:
     def __set_up(self):
         chromedriver.install()
         options = Options()
-        #options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument('--log-level=3')
         self.driver = uc.Chrome(version_main=self.version_main, options=options)
@@ -233,7 +234,8 @@ class YoulaParser:
         self.__get_url()
         try:
             data = self.__parser(self.url, self.data_list_count)
-            self.__write_descriptions()
+            if self.need_description:
+                self.__write_descriptions()
         except Exception as ex:
             print(f'Непредвиденная ошибка: {ex}')
             self.driver.close()

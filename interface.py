@@ -15,7 +15,7 @@ class ParserInputApp(tk.Tk):
         super().__init__()
 
         self.title("Поиск на интернет-площадках")
-        self.geometry("600x550")
+        self.geometry("600x600")  # Увеличил высоту окна
 
         # Variables
         self.min_price = tk.StringVar(value="0")
@@ -29,6 +29,7 @@ class ParserInputApp(tk.Tk):
         self.run_avito = tk.BooleanVar(value=True)
         self.run_youla = tk.BooleanVar(value=True)
         self.run_meshok = tk.BooleanVar(value=True)
+        self.need_description = tk.BooleanVar(value=False)  # Новый чекбокс
 
         # Create Inputs
         self.create_text_input("Минимальная цена:", self.min_price, 0)
@@ -42,13 +43,14 @@ class ParserInputApp(tk.Tk):
         self.create_parser_checkbox("Запустить поиск на Avito :", self.run_avito, 6)
         self.create_parser_checkbox("Запустить поиск на Youla Parser:", self.run_youla, 7)
         self.create_parser_checkbox("Запустить поиск на Meshok:", self.run_meshok, 8)
+        self.create_parser_checkbox("Нужны описания товаров:", self.need_description, 9)  # Новый чекбокс
 
         # Submit button
         submit_button = ttk.Button(self, text="Запустить поиск", command=self.start_parsing)
-        submit_button.grid(row=9, column=1, pady=10)
+        submit_button.grid(row=10, column=1, pady=10)
         # Button to run VisualCreator.py script
         visual_creator_button = ttk.Button(self, text="Вывести результаты", command=self.run_visual_creator)
-        visual_creator_button.grid(row=10, column=1, pady=10)
+        visual_creator_button.grid(row=11, column=1, pady=10)
 
     def create_text_input(self, label_text, variable, row):
         """Creates a labeled text input field."""
@@ -72,6 +74,7 @@ class ParserInputApp(tk.Tk):
         data_list_count = self.data_list_count.get()
         search_query = self.search_query.get()
         items = [item.strip() for item in self.items.get().split(",")]
+        need_description = self.need_description.get()  # Получаем значение нового чекбокса
 
         if not min_price: min_price = "0"
         if not max_price: max_price = "1000"
@@ -87,10 +90,10 @@ class ParserInputApp(tk.Tk):
             self.run_avito_parser(url_avito, count_avito, max_price, items)
 
         if self.run_youla.get():
-            self.run_youla_parser(url_youla, data_list_count, max_price)
+            self.run_youla_parser(url_youla, data_list_count, max_price, need_description)
 
         if self.run_meshok.get():
-            self.run_meshok_parser(url_meshok, data_list_count, max_price)
+            self.run_meshok_parser(url_meshok, data_list_count, max_price, need_description)
 
         print("Parsing completed.")
 
@@ -112,35 +115,39 @@ class ParserInputApp(tk.Tk):
             except Exception as e:
                 print(f"Error while retrying Avito: {e}")
 
-    def run_youla_parser(self, url, data_list_count, max_price):
+    def run_youla_parser(self, url, data_list_count, max_price, need_description):
         """Run Youla parser with provided parameters."""
         try:
-            YoulaParser(url=url, version_main=110, price=int(max_price), data_list_count=int(data_list_count)).parse()
+            YoulaParser(url=url, version_main=110, price=int(max_price), data_list_count=int(data_list_count), need_description=need_description).parse()
         except Exception as e:
             print(f"Error while parsing Youla: {e}")
             try:
-                YoulaParser(url=url, version_main=124, price=int(max_price), data_list_count=int(data_list_count)).parse()
+                YoulaParser(url=url, version_main=124, price=int(max_price), data_list_count=int(data_list_count), need_description=need_description).parse()
             except Exception as e:
                 print(f"Error while retrying Youla: {e}")
 
-    def run_meshok_parser(self, url, data_list_count, max_price):
+    def run_meshok_parser(self, url, data_list_count, max_price, need_description):
         """Run Meshok parser with provided parameters."""
         try:
-            MeshokParser(url=url, version_main=110, data_list_count=int(data_list_count), price=int(max_price)).parse()
+            MeshokParser(url=url, version_main=110, data_list_count=int(data_list_count), price=int(max_price), need_description=need_description).parse()
         except Exception as e:
             print(f"Error while parsing Meshok: {e}")
             try:
-                MeshokParser(url=url, version_main=124, data_list_count=int(data_list_count), price=int(max_price)).parse()
+                MeshokParser(url=url, version_main=124, data_list_count=int(data_list_count), price=int(max_price), need_description=need_description).parse()
             except Exception as e:
                 print(f"Error while retrying Meshok: {e}")
 
     def run_visual_creator(self):
         """Runs the VisualCreator.py script."""
+        need_description = self.need_description.get()
         try:
-            Popen(['python', 'VisualCreator.py'])
-            print("VisualCreator.py script started.")
+            from VisualCreator import visualize
+            visualize(need_description=need_description)
+            """Popen(['python', 'VisualCreator.py'])
+            print("VisualCreator.py script started.")"""
         except Exception as e:
             print(f"Failed to start VisualCreator.py: {e}")
+
 
 if __name__ == "__main__":
     app = ParserInputApp()
