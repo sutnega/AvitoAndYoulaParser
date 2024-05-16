@@ -88,9 +88,12 @@ class YoulaParser:
                 if url not in self.unique_urls:
                     self.unique_urls.append(url)
                     if int(price) <= self.price:
-                        # description = self.__get_description(url).replace('ПоделитьсяПожаловаться на объявление', '')
-                        description = 'not chosen'
+                        if any(black_word in name for black_word in self.blacklist):
+                            print(
+                                f"Пропуск товара с названием {name} из-за наличия слов из черного списка в названии.")
+                            continue
 
+                        description = 'not chosen'
                         data_list.append({
                             'name': name,
                             'city': city,

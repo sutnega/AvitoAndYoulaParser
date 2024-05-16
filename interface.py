@@ -115,7 +115,7 @@ class ParserInputApp(tk.Tk):
         except Exception as e:
             print(f"Error while parsing Avito: {e}")
             try:
-                AvitoParser(url=url, version_main=110, count=count, price=int(max_price), items=items).parse()
+                AvitoParser(url=url, version_main=124, count=count, price=int(max_price), items=items).parse()
             except Exception as e:
                 print(f"Error while retrying Avito: {e}")
 
