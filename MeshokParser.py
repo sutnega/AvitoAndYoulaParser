@@ -36,7 +36,7 @@ class MeshokParser:
     def __set_up(self):
         chromedriver.install()
         options = Options()
-        #options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument('--log-level=3')
         self.driver = uc.Chrome(version_main=self.version_main, options=options)
@@ -88,10 +88,12 @@ class MeshokParser:
                     self.unique_links.append(link)
                     if price!='нет цены':
                         if int(round(float(price))) <= self.price :
-                            #description = self.__get_description(link).replace('ПоделитьсяПожаловаться на объявление', '')
                             description = 'not chosen'
                             description = description.replace(' ', ' ').replace(' ', ' ').replace(' ', ' ')
-
+                            if any(black_word in name for black_word in self.blacklist):
+                                print(
+                                    f"Пропуск товара с названием {name} из-за наличия слов из черного списка в названии.")
+                                continue
                             data_list.append({
                                 'name': name,
                                 'city': city,
@@ -192,12 +194,12 @@ class MeshokParser:
             description = re.sub(r"[^\w\s,.!?;:()\'\"-]+", '', description, flags=re.UNICODE)
             #\U0001f525
 
-            """
+
             #Проверка на черный список слов в описании
             if any(black_word in description for black_word in self.blacklist):
-                print(f"Пропуск товара с названием {name} из-за наличия слов из черного списка в описании.")
+                print(f"Пропуск товара с названием {item.get('name')} из-за наличия слов из черного списка в описании.")
                 continue
-            """
+
 
             print("Modified descr:", description)
             # Обновляем description в объекте

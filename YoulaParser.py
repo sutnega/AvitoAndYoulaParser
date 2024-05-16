@@ -17,17 +17,18 @@ import re  # Импорт для избавления от смайликов
 
 
 class YoulaParser:
-    def __init__(self, url: str, data_list_count: int,need_description: bool=1, price: int = 0,
-                 version_main=None):  # items: list, count: int = 10,
+    def __init__(self, url: str, data_list_count: int, need_description: bool = 1, price: int = 0,
+                 version_main=None, blacklist=None):  # items: list, count: int = 10,
         self.url = url
         # self.items = items
         # self.count = count
         self.price = price
         self.version_main = version_main
         self.data = []
-        self.unique_urls=[]
+        self.unique_urls = []
         self.data_list_count = data_list_count
         self.need_description = need_description
+        self.blacklist = blacklist if blacklist else []  # Инициализация blacklist
 
     def __get_url(self):
         self.driver.get(self.url)
@@ -83,18 +84,17 @@ class YoulaParser:
                 # print(url)
                 # print('-----------')
                 if price == 'Бесплатно':
-                    price=0
+                    price = 0
                 if url not in self.unique_urls:
                     self.unique_urls.append(url)
                     if int(price) <= self.price:
-                        #description = self.__get_description(url).replace('ПоделитьсяПожаловаться на объявление', '')
+                        # description = self.__get_description(url).replace('ПоделитьсяПожаловаться на объявление', '')
                         description = 'not chosen'
-
 
                         data_list.append({
                             'name': name,
                             'city': city,
-                            'description':description,
+                            'description': description,
                             'price': price,
                             'discount': discount,
                             'url': url
@@ -139,7 +139,6 @@ class YoulaParser:
             except Exception as e:
                 print(f"Ошибка при клике на элемент: {e}")
 
-
             # находим высоту прокрутки
             last_height = self.driver.execute_script("return document.body.scrollHeight")
             # нажимаем page down для прогрузки первого блока
@@ -171,7 +170,6 @@ class YoulaParser:
             print("завершение поиска на Юле")
             pass
 
-
     def __get_description(self, url):
         try:
             self.driver.get(url)
@@ -182,7 +180,7 @@ class YoulaParser:
             if description_element:
                 description = description_element.text.strip()
                 # Удаление эмодзи и других специальных символов
-                #description = re.sub(r"[^а-яА-ЯёЁ ,.!?;:()\"\'-]", '', description)  # фильтрация Unicode для эмодзи
+                # description = re.sub(r"[^а-яА-ЯёЁ ,.!?;:()\"\'-]", '', description)  # фильтрация Unicode для эмодзи
                 return description
             else:
                 return "Description not found"
@@ -215,14 +213,19 @@ class YoulaParser:
             description = description.replace('Показать на карте', '').replace('\u2193', '').replace(' ', '')
             description = re.sub(r"[^\w\s,.!?;:()\'\"-]+", '', description, flags=re.UNICODE)
             description = re.sub(r"[^\w\s,.!?;:()\'\"-]+", '', description, flags=re.UNICODE)
+
+            if any(black_word in description for black_word in self.blacklist):
+                print(f"Пропуск товара с названием {item.get('name')} из-за наличия слов из черного списка в описании.")
+                continue
             print("Modified descr:", description)
             # Обновляем description в объекте
             item['description'] = description
         # Сохраняем изменённые данные в новый файл
         with open(output_filename, 'w') as file:
-            json.dump(Youladata, file,ensure_ascii=False, indent=4)
+            json.dump(Youladata, file, ensure_ascii=False, indent=4)
 
         print(f"Modified data has been saved to {output_filename}")
+
     pass
 
     def __save_data(self):
@@ -242,7 +245,6 @@ class YoulaParser:
             self.driver.quit()
         self.driver.close()
         self.driver.quit()
-
 
     if __name__ == "__main__":
         urlYoula = 'https://youla.ru/all?q=гантели'

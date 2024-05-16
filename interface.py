@@ -10,6 +10,7 @@ from MeshokParser import MeshokParser
 import chromedriver_autoinstaller as chromedriver
 from subprocess import Popen
 
+
 class ParserInputApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -24,6 +25,7 @@ class ParserInputApp(tk.Tk):
         self.data_list_count = tk.StringVar(value="50")
         self.search_query = tk.StringVar(value="пульт")
         self.items = tk.StringVar(value="пульт")
+        self.blacklist = tk.StringVar(value="сломан")
 
         # Parser selection
         self.run_avito = tk.BooleanVar(value=True)
@@ -38,19 +40,20 @@ class ParserInputApp(tk.Tk):
         self.create_text_input("Ограничение товаров Юла и Мешок:", self.data_list_count, 3)
         self.create_text_input("Поисковой запрос:", self.search_query, 4)
         self.create_text_input("Ключевые слова (через запятую):", self.items, 5)
+        self.create_text_input("Черный список слов (через запятую):", self.blacklist, 6)
 
         # Parser selection checkboxes
-        self.create_parser_checkbox("Запустить поиск на Avito :", self.run_avito, 6)
-        self.create_parser_checkbox("Запустить поиск на Youla Parser:", self.run_youla, 7)
-        self.create_parser_checkbox("Запустить поиск на Meshok:", self.run_meshok, 8)
-        self.create_parser_checkbox("Нужны описания товаров:", self.need_description, 9)  # Новый чекбокс
+        self.create_parser_checkbox("Запустить поиск на Avito :", self.run_avito, 7)
+        self.create_parser_checkbox("Запустить поиск на Youla Parser:", self.run_youla, 8)
+        self.create_parser_checkbox("Запустить поиск на Meshok:", self.run_meshok, 9)
+        self.create_parser_checkbox("Нужны описания товаров:", self.need_description, 10)  # Новый чекбокс
 
         # Submit button
         submit_button = ttk.Button(self, text="Запустить поиск", command=self.start_parsing)
-        submit_button.grid(row=10, column=1, pady=10)
+        submit_button.grid(row=11, column=1, pady=10)
         # Button to run VisualCreator.py script
         visual_creator_button = ttk.Button(self, text="Вывести результаты", command=self.run_visual_creator)
-        visual_creator_button.grid(row=11, column=1, pady=10)
+        visual_creator_button.grid(row=12, column=1, pady=10)
 
     def create_text_input(self, label_text, variable, row):
         """Creates a labeled text input field."""
@@ -74,6 +77,7 @@ class ParserInputApp(tk.Tk):
         data_list_count = self.data_list_count.get()
         search_query = self.search_query.get()
         items = [item.strip() for item in self.items.get().split(",")]
+        blacklist = [black_word.strip() for black_word in self.blacklist.get().split(",")]
         need_description = self.need_description.get()  # Получаем значение нового чекбокса
 
         if not min_price: min_price = "0"
@@ -90,10 +94,10 @@ class ParserInputApp(tk.Tk):
             self.run_avito_parser(url_avito, count_avito, max_price, items)
 
         if self.run_youla.get():
-            self.run_youla_parser(url_youla, data_list_count, max_price, need_description)
+            self.run_youla_parser(url_youla, data_list_count, max_price, need_description, blacklist)
 
         if self.run_meshok.get():
-            self.run_meshok_parser(url_meshok, data_list_count, max_price, need_description)
+            self.run_meshok_parser(url_meshok, data_list_count, max_price, need_description, blacklist)
 
         print("Parsing completed.")
 
@@ -115,25 +119,31 @@ class ParserInputApp(tk.Tk):
             except Exception as e:
                 print(f"Error while retrying Avito: {e}")
 
-    def run_youla_parser(self, url, data_list_count, max_price, need_description):
+    def run_youla_parser(self, url, data_list_count, max_price, need_description, blacklist):
         """Run Youla parser with provided parameters."""
         try:
-            YoulaParser(url=url, version_main=110, price=int(max_price), data_list_count=int(data_list_count), need_description=need_description).parse()
+            YoulaParser(url=url, version_main=110, price=int(max_price), data_list_count=int(data_list_count),
+                        need_description=need_description, blacklist=blacklist).parse()
         except Exception as e:
             print(f"Error while parsing Youla: {e}")
             try:
-                YoulaParser(url=url, version_main=124, price=int(max_price), data_list_count=int(data_list_count), need_description=need_description).parse()
+                YoulaParser(url=url, version_main=124, price=int(max_price), data_list_count=int(data_list_count),
+                            need_description=need_description, blacklist=blacklist).parse()
             except Exception as e:
                 print(f"Error while retrying Youla: {e}")
 
-    def run_meshok_parser(self, url, data_list_count, max_price, need_description):
+    def run_meshok_parser(self, url, data_list_count, max_price, need_description, blacklist):
         """Run Meshok parser with provided parameters."""
         try:
-            MeshokParser(url=url, version_main=110, data_list_count=int(data_list_count), price=int(max_price), need_description=need_description).parse()
+            print("Начинаю поиск на Мешке")
+            MeshokParser(url=url, version_main=110, data_list_count=int(data_list_count), price=int(max_price),
+                         need_description=need_description, blacklist=blacklist).parse()
         except Exception as e:
             print(f"Error while parsing Meshok: {e}")
             try:
-                MeshokParser(url=url, version_main=124, data_list_count=int(data_list_count), price=int(max_price), need_description=need_description).parse()
+                print("Перезапускаем поиск на Мешке")
+                MeshokParser(url=url, version_main=124, data_list_count=int(data_list_count), price=int(max_price),
+                             need_description=need_description, blacklist=blacklist).parse()
             except Exception as e:
                 print(f"Error while retrying Meshok: {e}")
 
@@ -151,6 +161,6 @@ class ParserInputApp(tk.Tk):
 
 if __name__ == "__main__":
     app = ParserInputApp()
-    #from subprocess import Popen
-    #Popen('python VisualCreator.py')
+    # from subprocess import Popen
+    # Popen('python VisualCreator.py')
     app.mainloop()
