@@ -1,6 +1,4 @@
 import json
-import re
-
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import time
@@ -12,12 +10,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options  # для спрятанного хрома
 
+import re  # Импорт для избавления от смайликов
+
 
 # pip install openpyxl
 
 
-class MeshokParser:
-    def __init__(self, url: str, data_list_count: int,need_description: bool=1, price: int = 0,
+class YoulaParser:
+    def __init__(self, url: str, data_list_count: int, need_description: bool = 1, price: int = 0,
                  version_main=None, blacklist=None):  # items: list, count: int = 10,
         self.url = url
         # self.items = items
@@ -25,7 +25,7 @@ class MeshokParser:
         self.price = price
         self.version_main = version_main
         self.data = []
-        self.unique_links =[]
+        self.unique_urls = []
         self.data_list_count = data_list_count
         self.need_description = need_description
         self.blacklist = blacklist if blacklist else []  # Инициализация blacklist
@@ -36,7 +36,7 @@ class MeshokParser:
     def __set_up(self):
         chromedriver.install()
         options = Options()
-        #options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument('--log-level=3')
         self.driver = uc.Chrome(version_main=self.version_main, options=options)
@@ -44,20 +44,11 @@ class MeshokParser:
     def __parse_page(self, html):
         """Функция сбора данных с прогружаемой страницы"""
         soup = BeautifulSoup(html, 'html.parser')
-        #blocks = soup.find_all('div', {"class": "itemCardList_743f6"})
-        blocks = soup.find_all('div', {"class": "itemCardList_e212f"})
-        #print("soup blocks")
-        #print(blocks)
-        print("__" * 100)
-
-        #blocks = self.driver.find_elements(By.CLASS_NAME, "itemCardList_743f6")
-        #print("driver blocks:")
-        #print(blocks)
+        blocks = soup.find_all('div', {"data-test-component": "ProductOrAdCard"})
         data_list = []
         for block in blocks:
             try:
-                #name = block.find('div', {'class': "itemTitle_743f6"}).text
-                name = block.find('div', {'class': "itemTitle_e212f"}).text
+                name = block.find('span', {'data-test-block': "ProductName"}).text
             except:
                 name = 'нет названия'
             try:
@@ -65,54 +56,63 @@ class MeshokParser:
             except:
                 city = 'город не указан'
             try:
-                price = block.find('div', {'class': "priceAndIcons_35695"}).text.replace('₽руб.', '') \
-                    .replace('\xa0', '').replace(' ', '')
-                price = price.replace('\u205f', '').replace('₽', '').replace('Благотворительныйлот', '')
-                price = price.replace(',', '.')
+                discount = block.find('div', {'data-test-component': "Badges"}).text
+                if '%' in discount:
+                    discount = discount.split('%')[0]
+                else:
+                    discount = ''
+            except:
+                discount = ''
+            try:
+                price = block.find('p', {'data-test-block': "ProductPrice"}).text.replace('₽руб.', '') \
+                    .replace('\xa0', '')
+                price = price.replace(' ', '').replace('\u205f', '')
             except:
                 price = 'нет цены'
             try:
-                link = "https://meshok.net" + block.find('a').get('href')
+                url = "https://youla.ru" + block.find('div').find('span').find('a').get('href')
             except:
-                link = 'ссылка не найдена'
+                url = 'ссылка не найдена'
 
             if 'нет названия' in name:
                 pass
             else:
-                print(name)
+                # print(name)
                 # print(city)
-                print(price)
-                print(link)
+                # print(price)
+                # print(discount)
+                # print(url)
                 # print('-----------')
                 if price == 'Бесплатно':
                     price = 0
-                if link not in self.unique_links:
-                    self.unique_links.append(link)
-                    if price!='нет цены':
-                        if int(round(float(price))) <= self.price :
-                            description = 'not chosen'
-                            description = description.replace(' ', ' ').replace(' ', ' ').replace(' ', ' ')
-                            if any(black_word in name for black_word in self.blacklist):
-                                print(
-                                    f"Пропуск товара с названием {name} из-за наличия слов из черного списка в названии.")
-                                continue
-                            data_list.append({
-                                'name': name,
-                                'city': city,
-                                'description': description,
-                                'price': price,
-                                'link': link
-                            })
-                            data = {
-                                'market': 'Meshok',
-                                'name': name,
-                                'city': city,
-                                'description': description,
-                                'price': price,
-                                'url': link
+                if url not in self.unique_urls:
+                    self.unique_urls.append(url)
+                    if int(price) <= self.price:
+                        if any(black_word in name for black_word in self.blacklist):
+                            print(
+                                f"Пропуск товара с названием {name} из-за наличия слов из черного списка в названии.")
+                            continue
 
-                            }
-                            self.data.append(data)
+                        description = 'not chosen'
+                        data_list.append({
+                            'name': name,
+                            'city': city,
+                            'description': description,
+                            'price': price,
+                            'discount': discount,
+                            'url': url
+                        })
+                        data = {
+                            'market': 'Youla',
+                            'name': name,
+                            'city': city,
+                            'description': description,
+                            'price': price,
+                            'discount': discount,
+                            'url': url
+
+                        }
+                        self.data.append(data)
         self.__save_data()
         return data_list
 
@@ -122,6 +122,26 @@ class MeshokParser:
         try:
             self.driver.get(url)
             time.sleep(2)
+
+            try:
+                # Нажать на кнопку с data-test-action="SelectGeolocationClick"
+                button_geo = self.driver.find_element(By.XPATH, '//button[@data-test-action="SelectGeolocationClick"]')
+                button_geo.click()
+                time.sleep(2)  # пауза, чтобы страница успела обработать действие
+
+                # Нажать на span с текстом "Город"
+                span_city = self.driver.find_element(By.XPATH, '//span[text()="Город"]')
+                span_city.click()
+                time.sleep(2)  # пауза, чтобы страница успела обработать действие
+
+                # Нажать на div с текстом "Москва"
+                div_moscow = self.driver.find_element(By.XPATH, '//div[text()="Москва"]')
+                div_moscow.click()
+                time.sleep(2)  # пауза, чтобы страница успела обработать действие
+                self.driver.get(url)
+            except Exception as e:
+                print(f"Ошибка при клике на элемент: {e}")
+
             # находим высоту прокрутки
             last_height = self.driver.execute_script("return document.body.scrollHeight")
             # нажимаем page down для прогрузки первого блока
@@ -146,11 +166,11 @@ class MeshokParser:
                 last_height = new_height
                 print(f'Собрано {len(data_list_pages)} позиций')
                 # проверка на количество выдачи
-                if len(self.unique_links) >= int(data_list_count):
+                if len(self.unique_urls) >= int(data_list_count):
                     break
             return data_list_pages
         finally:
-            print("завершение поиска на Мешке")
+            print("завершение поиска на Юле")
             pass
 
     def __get_description(self, url):
@@ -159,9 +179,11 @@ class MeshokParser:
             time.sleep(2)  # Wait for the page to load
             html = self.driver.page_source
             soup = BeautifulSoup(html, 'html.parser')
-            description_element = soup.select_one("[itemprop='description']")
+            description_element = soup.select_one("[data-test-component='ProductDetails']")
             if description_element:
                 description = description_element.text.strip()
+                # Удаление эмодзи и других специальных символов
+                # description = re.sub(r"[^а-яА-ЯёЁ ,.!?;:()\"\'-]", '', description)  # фильтрация Unicode для эмодзи
                 return description
             else:
                 return "Description not found"
@@ -171,14 +193,14 @@ class MeshokParser:
 
     def __write_descriptions(self):
         # Путь к исходному файлу
-        input_filename = 'Meshok.json'
+        input_filename = 'Youla.json'
         # Путь к файлу для сохранения изменённых данных
-        output_filename = 'Meshok_descriptions.json'
+        output_filename = 'Youla_descriptions.json'
         # Считываем данные из исходного JSON-файла
         with open(input_filename, 'r', encoding='utf-8-sig') as file:
-            Meshokdata = json.load(file)
+            Youladata = json.load(file)
         # Обрабатываем каждый элемент в массиве
-        for item in Meshokdata:
+        for item in Youladata:
             # Извлекаем URL и выводим его
             url = item.get('url')
             description = self.__get_description(url).replace('ПоделитьсяПожаловаться на объявление', '')
@@ -192,29 +214,25 @@ class MeshokParser:
             description = description.replace('Подкатегория', ' Подкатегория: ')
             description = description.replace('Тип', ' Тип: ').replace('\u20bd', '').replace('\xd7', '')
             description = description.replace('Показать на карте', '').replace('\u2193', '').replace(' ', '')
-            description = description.replace(' ', ' ').replace(' ', ' ').replace(' ', ' ')
             description = re.sub(r"[^\w\s,.!?;:()\'\"-]+", '', description, flags=re.UNICODE)
-            #\U0001f525
+            description = re.sub(r"[^\w\s,.!?;:()\'\"-]+", '', description, flags=re.UNICODE)
 
-
-            #Проверка на черный список слов в описании
             if any(black_word in description for black_word in self.blacklist):
                 print(f"Пропуск товара с названием {item.get('name')} из-за наличия слов из черного списка в описании.")
                 continue
-
-
             print("Modified descr:", description)
             # Обновляем description в объекте
             item['description'] = description
         # Сохраняем изменённые данные в новый файл
         with open(output_filename, 'w') as file:
-            json.dump(Meshokdata, file,ensure_ascii=False, indent=4)
+            json.dump(Youladata, file, ensure_ascii=False, indent=4)
 
         print(f"Modified data has been saved to {output_filename}")
+
     pass
 
     def __save_data(self):
-        with open("Meshok.json", "w", encoding='utf-8') as f:
+        with open("Youla.json", "w", encoding='utf-8') as f:
             json.dump(self.data, f, ensure_ascii=False, indent=4)
 
     def parse(self):
@@ -232,14 +250,15 @@ class MeshokParser:
         self.driver.quit()
 
     if __name__ == "__main__":
-        url = 'https://meshok.net/listing?search=пульт'
-        print(url)
-        print('Запуск парсера на Мешке')
+        urlAvito = 'https://www.avito.ru/moskva_i_mo?q=ножницы'
+        print(urlAvito)
+        price = 500
+        print('Запуск парсера на Aвито')
         data_list_count = int(input('Сколько примерно товаров нужно найти? (Стандарт:50)\n'))
-        blacklist_words = ['поврежден', 'не работает', 'брак']  # Пример черного списка слов
-        from MeshokParser import MeshokParser
-        try: MeshokParser(url=url, version_main=110,data_list_count=data_list_count, # 124 or 110
-                  price=1000,blacklist=blacklist_words).parse()
-        except Exception as e:\
-            MeshokParser(url=url, version_main=124,data_list_count=data_list_count, # 124 or 110
-                  price=1000,blacklist=blacklist_words).parse()
+        from YoulaParser import YoulaParser
+        try:
+            YoulaParser(url=urlAvito, version_main=110,  # 124 or 110
+                        price=price, data_list_count=int(data_list_count)).parse()
+        except Exception as e:
+            YoulaParser(url=urlAvito, version_main=124,  # 124 or 110
+                        price=price, data_list_count=int(data_list_count)).parse()

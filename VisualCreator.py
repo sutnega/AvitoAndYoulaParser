@@ -1,6 +1,7 @@
 def visualize (need_description:bool):
     # -*- coding: utf-8 -*-
     import json
+    from datetime import datetime
 
     # содержит ваши JSON данные
     with open('Avito.json', encoding='utf-8-sig') as json_file:
@@ -213,14 +214,21 @@ def visualize (need_description:bool):
     html_content = html_start + html_body + html_end
 
     # Writing the HTML content to a file
-    with open("market_listings_sortable.html", "w", encoding="utf-8") as file:
+    # Получаем текущую дату и время
+    current_time = datetime.now()
+    # Форматируем дату и время в строку (например, "2024-05-22_15-30-00")
+    formatted_time = current_time.strftime("%d-%m-%Y_%H-%M-%S")
+
+    # Создаем имя файла с датой и временем
+    file_name = f"market_listings_{formatted_time}.html"
+    with open(file_name, "w", encoding="utf-8") as file:
         file.write(html_content)
 
-    print("HTML файл 'market_listings.html' успешно создан.")
-    print("HTML file 'market_listings.html' has been created")
+    print(f"HTML файл {file_name} успешно создан.")
+    print(f"HTML file {file_name} has been created")
 
     import webbrowser
-    url = 'market_listings_sortable.html'
+    url = file_name
     webbrowser.open(url, new=2)  # open in new tab
 
 if __name__ == "__main__":
