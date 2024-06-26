@@ -113,6 +113,8 @@ def visualize (need_description:bool):
     </head>
     <body>
         <h1 style="text-align: center; margin-top: 20px;">Сбор данных Доски Объявлений</h1>
+        <h4 style="text-align: ; margin-left: 10px;"> Количество товаров - Авито: 70, Юла: 29, Мешок: 20 </h4>
+	    <h4 style="text-align: ; margin-left: 10px;"> Средняя цена - Авито: 423р, Юла: 402р, Мешок: 411р </h4>
         <div class="scroll-container">
     """
 

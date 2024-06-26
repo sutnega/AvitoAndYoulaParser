@@ -115,7 +115,7 @@ class ParserInputApp(tk.Tk):
         except Exception as e:
             print(f"Error while parsing Avito: {e}")
             try:
-                AvitoParser(url=url, version_main=124, count=count, price=int(max_price), items=items).parse()
+                AvitoParser(url=url, version_main=126, count=count, price=int(max_price), items=items).parse()
             except Exception as e:
                 print(f"Error while retrying Avito: {e}")
 
@@ -127,7 +127,7 @@ class ParserInputApp(tk.Tk):
         except Exception as e:
             print(f"Error while parsing Youla: {e}")
             try:
-                YoulaParser(url=url, version_main=124, price=int(max_price), data_list_count=int(data_list_count),
+                YoulaParser(url=url, version_main=126, price=int(max_price), data_list_count=int(data_list_count),
                             need_description=need_description, blacklist=blacklist).parse()
             except Exception as e:
                 print(f"Error while retrying Youla: {e}")
@@ -142,7 +142,7 @@ class ParserInputApp(tk.Tk):
             print(f"Error while parsing Meshok: {e}")
             try:
                 print("Перезапускаем поиск на Мешке")
-                MeshokParser(url=url, version_main=124, data_list_count=int(data_list_count), price=int(max_price),
+                MeshokParser(url=url, version_main=126, data_list_count=int(data_list_count), price=int(max_price),
                              need_description=need_description, blacklist=blacklist).parse()
             except Exception as e:
                 print(f"Error while retrying Meshok: {e}")

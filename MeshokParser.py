@@ -45,7 +45,8 @@ class MeshokParser:
         """Функция сбора данных с прогружаемой страницы"""
         soup = BeautifulSoup(html, 'html.parser')
         #blocks = soup.find_all('div', {"class": "itemCardList_743f6"})
-        blocks = soup.find_all('div', {"class": "itemCardList_e212f"})
+        # blocks = soup.find_all('div', {"class": "itemCardList_e212f"})
+        blocks = soup.find_all('div', {"class": "itemCardList_16641"})
         #print("soup blocks")
         #print(blocks)
         print("__" * 100)
@@ -57,7 +58,7 @@ class MeshokParser:
         for block in blocks:
             try:
                 #name = block.find('div', {'class': "itemTitle_743f6"}).text
-                name = block.find('div', {'class': "itemTitle_e212f"}).text
+                name = block.find('div', {'class': "itemTitle_16641"}).text
             except:
                 name = 'нет названия'
             try:

@@ -36,7 +36,7 @@ class YoulaParser:
     def __set_up(self):
         chromedriver.install()
         options = Options()
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument('--log-level=3')
         self.driver = uc.Chrome(version_main=self.version_main, options=options)
